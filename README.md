@@ -46,7 +46,7 @@ DB_NAME=""
 # Spotify
 CLIENT_ID=""
 CLIENT_SECRET=""
-REDIRECT_URI="k"
+REDIRECT_URI=""
 SCOPE=""
 ```
 
