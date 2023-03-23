@@ -8,7 +8,9 @@ load_dotenv()
 DB_URI = os.getenv("DB_URI")
 DB_NAME = os.getenv("DB_NAME").lower()
 
-print(f"CAUTION: This will delete any previous records in the {DB_NAME} database at {DB_URI}.\nAre you sure you want to continue?")
+print(
+    f"CAUTION: This will delete any previous records in the {DB_NAME} database at {DB_URI}.\nAre you sure you want to continue?"
+)
 input("Press Ctrl+C to cancel or any key to continue...")
 
 with psycopg.connect(DB_URI) as conn:
@@ -21,12 +23,13 @@ with psycopg.connect(DB_URI) as conn:
 
         if DB_NAME in db_names:
             cur.execute(psycopg.sql.SQL("DROP DATABASE {}".format(DB_NAME)))
-        
+
         cur.execute(psycopg.sql.SQL("CREATE DATABASE {}".format(DB_NAME)))
 
 with psycopg.connect(f"{DB_URI}/{DB_NAME}") as conn:
     with conn.cursor() as cur:
-        cur.execute("""
+        cur.execute(
+            """
             CREATE TABLE users (
                 id text PRIMARY KEY,
                 access_token text,
@@ -35,6 +38,7 @@ with psycopg.connect(f"{DB_URI}/{DB_NAME}") as conn:
                 refresh_token text,
                 expires_at bigint
             )
-        """)
+            """
+        )
 
     conn.commit()

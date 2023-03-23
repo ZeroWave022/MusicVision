@@ -11,24 +11,28 @@ with open("./spotify_links.json") as f:
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
+
 def get_b64_auth_header(client_id, client_secret):
     auth = f"{client_id}:{client_secret}".encode()
     return f"{b64encode(auth).decode()}"
 
+
 def refresh_token(old_token: str) -> dict:
-    req_params = {
-        "grant_type": "refresh_token",
-        "refresh_token": old_token
-    }
+    req_params = {"grant_type": "refresh_token", "refresh_token": old_token}
     req_headers = {
         "Authorization": f"Basic {get_b64_auth_header(getenv('client_id'), getenv('client_secret'))}",
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
     }
-    req = requests.post(SPOTIFY_LINKS["token"] + "?grant_type=refresh_token", params=req_params, headers=req_headers)
+    req = requests.post(
+        SPOTIFY_LINKS["token"] + "?grant_type=refresh_token",
+        params=req_params,
+        headers=req_headers,
+    )
 
     res = json.loads(req.text)
 
     return res
+
 
 @auth_bp.route("/callback")
 def auth_callback():
@@ -40,10 +44,10 @@ def auth_callback():
     grant_type = "authorization_code"
     code = args["code"]
     redirect_uri = request.base_url
-    
+
     req_headers = {
         "Authorization": f"Basic {get_b64_auth_header(getenv('client_id'), getenv('client_secret'))}",
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
     }
 
     req_params = {
@@ -51,7 +55,7 @@ def auth_callback():
         "code": code,
         "redirect_uri": redirect_uri,
     }
-    
+
     token_req = requests.post(api_link, params=req_params, headers=req_headers)
 
     user_info = json.loads(token_req.text)
@@ -60,20 +64,22 @@ def auth_callback():
 
     user_headers = {
         "Authorization": f"Bearer {user_info['access_token']}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     }
 
     profile_req = requests.get(SPOTIFY_LINKS["current_user"], headers=user_headers)
     user_profile = json.loads(profile_req.text)
     user_info["id"] = user_profile["id"]
 
-
     with get_db_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("""
+            cur.execute(
+                """
                 INSERT INTO users
                 VALUES (%(id)s, %(access_token)s, %(token_type)s, %(scope)s, %(refresh_token)s, %(expires_at)s)
-            """, user_info)
+                """,
+                user_info,
+            )
 
         conn.commit()
 
@@ -82,14 +88,15 @@ def auth_callback():
     response.set_cookie("access_token", user_info["access_token"])
     return response
 
+
 @auth_bp.route("/login")
 def login():
     api_link = SPOTIFY_LINKS["login"]
     client_id = getenv("client_id")
     redirect_uri = request.host_url + "auth/callback"
-    state = "" # TBA
+    state = ""  # TBA
     scope = getenv("scope")
-    
+
     auth_link = f"{api_link}?client_id={client_id}&response_type=code&redirect_uri={redirect_uri}&scope={scope}"
-    
+
     return render_template("login.html", auth_link=auth_link)
