@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+    <h1>Home</h1>
+    {% if request.cookies.get("logged_in") %}
+        <p>Your display name is {{ name }}.</p>
+        <p>You have {{ followers }} followers.</p>
+    {% endif %}
+{% endblock %}

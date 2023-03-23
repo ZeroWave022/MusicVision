@@ -1,0 +1,5 @@
+{
+    "login": "https://accounts.spotify.com/authorize",
+    "token": "https://accounts.spotify.com/api/token",
+    "current_user": "https://api.spotify.com/v1/me"
+}
