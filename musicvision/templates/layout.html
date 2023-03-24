@@ -19,11 +19,13 @@
     <nav>
         <a href="/">Home</a>
         <a href="/features">Features</a>
+        <a href="/about">About</a>
         
+
         {% if g.user %}
-        <a href="/dashboard">Dashboard</a>       
+        <a href="/dashboard" id="interaction-link">Dashboard</a>       
         {% else %}
-        <a href="/auth/login">Login</a>
+        <a href="/auth/login" id="interaction-link">Login</a>
         {% endif %}
     </nav>
 

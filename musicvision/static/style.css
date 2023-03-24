@@ -1,18 +1,22 @@
 body {
     font-family: "Montserrat", Arial, Helvetica, sans-serif;
+    background-color: hsl(255deg 100% 15%);
+    color: white;
 }
 
 nav {
     display: flex;
     justify-content: center;
-    width: 80vw;
+    align-items: center;
+    width: 90vw;
     margin: auto;
     gap: 50px;
+    position: relative;
 }
 
 nav a {
     text-decoration: none;
-    color: black;
+    color: white;
     padding: 15px;
     font-size: 22px;
     font-weight: 500;
@@ -23,4 +27,15 @@ nav a {
 nav a:hover {
     transition: 0.2s ease-in-out;
     text-shadow: gray 2px 2px 5px;
+}
+
+#interaction-link {
+    position: absolute;
+    right: 0;
+    font-size: 18px;
+    padding: 10px;
+
+    color: black;
+    background-color: white;
+    border-radius: 32px;
 }
