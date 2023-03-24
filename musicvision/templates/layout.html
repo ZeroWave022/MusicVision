@@ -19,7 +19,12 @@
     <nav>
         <a href="/">Home</a>
         <a href="/features">Features</a>
+        
+        {% if g.user %}
+        <a href="/dashboard">Dashboard</a>       
+        {% else %}
         <a href="/auth/login">Login</a>
+        {% endif %}
     </nav>
 
     <main>
