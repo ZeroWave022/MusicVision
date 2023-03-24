@@ -1,11 +1,46 @@
 {% extends "layout.html" %}
 
+{% block additional_head_info %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+{% endblock %}
+
 {% block title %}
     Dashboard
 {% endblock %}
 
 {% block main %}
-    <h1>Dashboard</h1>
-    <img src="{{ song['item']['album']['images'][0]['url'] }}" alt="Album cover">
-    <p>{{ song["item"]['artists'][0]['name'] }} - {{ song["item"]["name"] }}</p>
+    <h1 id="page-title">MusicVision Dashboard</h1>
+
+    <div class="flex-row">
+        <div>
+            {% if song %}
+                <div id="now-playing-title">
+                    <img src="{{ url_for('static', filename='icons/Spotify_Logo_White.png') }}" alt="Spotify Logo">
+                    <h1>Now Playing</h1>
+                </div>
+                <div id="now-playing">
+                    <img src="{{ song['album']['images'][0]['url'] }}" alt="Album cover">
+                    <div id="track-info">
+                        <h1>{{ song["name"] }}</h1>
+                        <h2>By {{ song['all_artists'] }}</h2>
+                        
+                        {% if song.get("playlist") %}
+                            <h2>
+                                Playlist: <a href="{{ song['playlist']['url'] }}">{{ song["playlist"]["name"] }}</a>
+                            </h2>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div id="nothing-playing">
+                    <h1>Now Playing</h1>
+                    <h2>Nothing currently playing in your Spotify profile.</h2>
+                </div>
+            {% endif %}
+        </div>
+        <div id="view-more">
+            <h3>View more information</h3>
+            <p>...</p>
+        </div>
+    </div>
 {% endblock %}
