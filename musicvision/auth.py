@@ -3,7 +3,7 @@ import requests
 import time
 from base64 import b64encode
 from flask import Blueprint, render_template, redirect, session, request, g
-from musicvision.db import query_db
+from musicvision.db import query_db, fetch_db
 from musicvision.env import getenv
 
 with open("./spotify_links.json") as f:
@@ -81,6 +81,18 @@ def auth_callback():
     user_profile = json.loads(profile_req.text)
     user_info["id"] = user_profile["id"]
 
+    db_user = fetch_db("SELECT * FROM users WHERE id = %s", "one", [user_info["id"]])
+
+    # If a user already exists in the database, delete the entry
+    if db_user:
+        query_db(
+            """
+            DELETE FROM users
+            WHERE id = %s
+            """,
+            [user_info["id"]],
+        )
+
     query_db(
         """
         INSERT INTO users
@@ -89,6 +101,7 @@ def auth_callback():
         user_info,
     )
 
+    session.clear()
     session["user"] = user_info
     return redirect("/")
 
