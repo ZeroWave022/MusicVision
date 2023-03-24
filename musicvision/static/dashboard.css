@@ -1,0 +1,86 @@
+#page-title {
+    color: white;
+    font-size: 48px;
+    font-weight: 300;
+    text-align: center;
+}
+
+.flex-row {
+    display: flex;
+    justify-content: center;
+    width: 90vw;
+    margin: auto;
+    gap: 30px;
+}
+
+.flex-row > div {
+    padding: 15px;
+    background-color: hsl(255deg 100% 45%);
+    border-radius: 8px;
+    color: white;
+    transition: 0.2s ease-in-out;
+    flex: 1;
+}
+
+.flex-row > div:hover {
+    box-shadow: 4px 8px 8px hsla(0, 0%, 0%, 0.865);
+    transition: 0.2s ease-in-out;
+}
+
+/* Now Playing flex element */
+#now-playing-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+#now-playing-title img {
+    width: 50%;
+    height: 100%;
+}
+
+#now-playing-title h1 {
+    font-weight: 300;
+}
+
+#now-playing {
+    display: flex;
+    gap: 15px;
+}
+
+#now-playing img {
+    height: 250px;
+    width: auto;
+}
+
+/* Track info, as part of the Now Playing element */
+#track-info h1 {
+    margin: 0.5rem 0;
+    font-size: 28px;
+    font-weight: 500;
+}
+
+#track-info h2 {
+    margin: 0.5rem 0;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+#track-info a {
+    color: white;
+}
+
+/* If nothing is currently playing, #nothing-playing is used */
+#nothing-playing {
+    text-align: center;
+}
+
+#nothing-playing h1 {
+    font-weight: 300;
+}
+
+#nothing-playing h2 {
+    font-weight: 500;
+    font-size: 18px;
+}
