@@ -108,6 +108,9 @@ def auth_callback():
 
 @auth_bp.route("/login")
 def login():
+    if session.get("user"):
+        return redirect("/dashboard")
+
     api_link = SPOTIFY_LINKS["login"]
     client_id = getenv("client_id")
     redirect_uri = request.host_url + "auth/callback"

@@ -1,7 +1,7 @@
 import json
 import time
 import requests
-from flask import Blueprint, render_template, session
+from flask import Blueprint, render_template, redirect, session
 from musicvision.auth import refresh_token
 from musicvision.db import query_db, fetch_db
 
@@ -41,7 +41,7 @@ def index():
             SET access_token=%(access_token)s, refresh_token=%(refresh_token)s, expires_at=%(expires_at)s
             WHERE access_token=%(old_token)s
             """,
-            current_user,
+            [current_user],
         )
 
     req_headers = {"Authorization": f"Bearer {current_user['access_token']}"}
@@ -56,3 +56,22 @@ def index():
         name=data["display_name"],
         followers=data["followers"]["total"],
     )
+
+
+@general_bp.route("/dashboard")
+def dashboard():
+    if not session.get("user"):
+        return redirect("/login")
+
+    headers = {
+        "Authorization": f"Bearer {session['user']['access_token']}",
+        "Content-Type": "application/json",
+    }
+
+    current_song_req = requests.get(
+        "https://api.spotify.com/v1/me/player/currently-playing", headers=headers
+    )
+
+    song = current_song_req.json()
+
+    return render_template("dashboard.html", song=song)
