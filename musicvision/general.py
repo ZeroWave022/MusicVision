@@ -85,7 +85,7 @@ def dashboard():
         song_in_playlist = song_info["context"]["type"] == "playlist"
     except:
         song_in_playlist = False
-    
+
     if song_in_playlist:
         playlist_req = requests.get(song_info["context"]["href"], headers=headers)
 
@@ -93,7 +93,7 @@ def dashboard():
 
         song["playlist"] = {
             "name": playlist["name"],
-            "url": playlist["external_urls"]["spotify"]
+            "url": playlist["external_urls"]["spotify"],
         }
 
     return render_template("dashboard.html", song=song)
