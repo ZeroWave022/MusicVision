@@ -3,7 +3,7 @@ import requests
 import time
 from base64 import b64encode
 from flask import Blueprint, render_template, redirect, session, request, g
-from musicvision.db import get_db_connection
+from musicvision.db import query_db
 from musicvision.env import getenv
 
 with open("./spotify_links.json") as f:
@@ -81,17 +81,13 @@ def auth_callback():
     user_profile = json.loads(profile_req.text)
     user_info["id"] = user_profile["id"]
 
-    with get_db_connection() as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
-                INSERT INTO users
-                VALUES (%(id)s, %(access_token)s, %(token_type)s, %(scope)s, %(refresh_token)s, %(expires_at)s)
-                """,
-                user_info,
-            )
-
-        conn.commit()
+    query_db(
+        """
+        INSERT INTO users
+        VALUES (%(id)s, %(access_token)s, %(token_type)s, %(scope)s, %(refresh_token)s, %(expires_at)s)
+        """,
+        user_info,
+    )
 
     session["user"] = user_info
     return redirect("/")
