@@ -1,7 +1,7 @@
 import json
 import time
 import requests
-from flask import Blueprint, render_template, redirect, session
+from flask import Blueprint, render_template, redirect, url_for, session
 from musicvision.auth import refresh_token
 from musicvision.db import query_db, fetch_db
 
@@ -41,7 +41,7 @@ def index():
             SET access_token=%(access_token)s, refresh_token=%(refresh_token)s, expires_at=%(expires_at)s
             WHERE access_token=%(old_token)s
             """,
-            [current_user],
+            current_user,
         )
 
     req_headers = {"Authorization": f"Bearer {current_user['access_token']}"}
@@ -61,7 +61,7 @@ def index():
 @general_bp.route("/dashboard")
 def dashboard():
     if not session.get("user"):
-        return redirect("/login")
+        return redirect(url_for("auth.login"))
 
     headers = {
         "Authorization": f"Bearer {session['user']['access_token']}",
@@ -72,6 +72,28 @@ def dashboard():
         "https://api.spotify.com/v1/me/player/currently-playing", headers=headers
     )
 
-    song = current_song_req.json()
+    if len(current_song_req.text) == 0:
+        return render_template("dashboard.html")
+
+    song_info = current_song_req.json()
+    song = song_info["item"]
+
+    all_artists = [artist["name"] for artist in song["artists"]]
+    song["all_artists"] = ", ".join(all_artists)
+
+    try:
+        song_in_playlist = song_info["context"]["type"] == "playlist"
+    except:
+        song_in_playlist = False
+    
+    if song_in_playlist:
+        playlist_req = requests.get(song_info["context"]["href"], headers=headers)
+
+        playlist = playlist_req.json()
+
+        song["playlist"] = {
+            "name": playlist["name"],
+            "url": playlist["external_urls"]["spotify"]
+        }
 
     return render_template("dashboard.html", song=song)
