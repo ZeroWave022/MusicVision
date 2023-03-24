@@ -2,7 +2,7 @@ import json
 import requests
 import time
 from base64 import b64encode
-from flask import Blueprint, render_template, redirect, make_response, request
+from flask import Blueprint, render_template, redirect, session, request, g
 from musicvision.db import get_db_connection
 from musicvision.env import getenv
 
@@ -32,6 +32,16 @@ def refresh_token(old_token: str) -> dict:
     res = json.loads(req.text)
 
     return res
+
+
+@auth_bp.before_app_request
+def load_logged_in_user():
+    user = session.get("user")
+
+    if user:
+        g.user = user
+    else:
+        g.user = None
 
 
 @auth_bp.route("/callback")
@@ -83,10 +93,8 @@ def auth_callback():
 
         conn.commit()
 
-    response = make_response(redirect("/"))
-    response.set_cookie("logged_in", "1")
-    response.set_cookie("access_token", user_info["access_token"])
-    return response
+    session["user"] = user_info
+    return redirect("/")
 
 
 @auth_bp.route("/login")

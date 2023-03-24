@@ -6,7 +6,7 @@
 
 {% block main %}
     <h1>Home</h1>
-    {% if request.cookies.get("logged_in") %}
+    {% if g.user %}
         <p>Your display name is {{ name }}.</p>
         <p>You have {{ followers }} followers.</p>
     {% endif %}
