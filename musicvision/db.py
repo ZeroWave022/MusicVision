@@ -1,14 +1,11 @@
-import os
-from dotenv import load_dotenv
 from psycopg import connect
 from psycopg.rows import dict_row
-
-load_dotenv()
+from musicvision.env import getenv
 
 
 def get_db_connection():
-    DB_URI = os.getenv("DB_URI")
-    DB_NAME = os.getenv("DB_NAME").lower()
+    DB_URI = getenv("DB_URI")
+    DB_NAME = getenv("DB_NAME").lower()
     return connect(f"{DB_URI}/{DB_NAME}", row_factory=dict_row)
 
 
