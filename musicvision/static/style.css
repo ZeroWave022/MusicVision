@@ -1,7 +1,6 @@
 body {
     font-family: "Montserrat", Arial, Helvetica, sans-serif;
-    background-color: hsl(255deg 100% 15%);
-    color: white;
+    background-color: rgb(228, 220, 207);
 }
 
 nav {
@@ -16,7 +15,7 @@ nav {
 
 nav a {
     text-decoration: none;
-    color: white;
+    color: black;
     padding: 15px;
     font-size: 22px;
     font-weight: 500;
@@ -29,13 +28,41 @@ nav a:hover {
     text-shadow: gray 2px 2px 5px;
 }
 
+#logo {
+    display: flex;
+    padding: 0;
+    margin-right: auto;
+}
+
+#logo:hover {
+    text-shadow: none;
+}
+
+#logo span {
+    font-size: 32px;
+    font-weight: 600;
+}
+
+#logo span:nth-child(1) {
+    color: rgb(227, 28, 28);
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
+}
+
+#logo span:nth-child(3) {
+    color: rgb(26, 133, 255);
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
+}
+
 #interaction-link {
-    position: absolute;
-    right: 0;
     font-size: 18px;
     padding: 10px;
+    margin-left: auto;
 
-    color: black;
-    background-color: white;
+    color: white;
+    background-color: rgb(0, 43, 91);
     border-radius: 32px;
+}
+
+#interaction-link:hover {
+    text-shadow: none;
 }

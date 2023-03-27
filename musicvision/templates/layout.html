@@ -7,7 +7,7 @@
     <title>MusicVision: {% block title %}{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" >
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" >
     
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
@@ -17,6 +17,12 @@
 </head>
 <body>
     <nav>
+        <a href="/" id="logo">
+            <span>M</span>
+            <span>usic</span>
+            <span>V</span>
+            <span>ision</span>
+        </a>
         <a href="/">Home</a>
         <a href="/features">Features</a>
         <a href="/about">About</a>
