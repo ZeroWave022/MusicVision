@@ -1,7 +1,13 @@
 from flask import Flask
+from musicvision.spotify import SpotifyApp
+from musicvision.env import getenv
+
+# Set globally used SpotifyApp client
+spotify_app = SpotifyApp(getenv("client_id"), getenv("client_secret"))
+
+# Import these submodules later, as they require spotify_app
 from musicvision.general import general_bp
 from musicvision.auth import auth_bp
-from musicvision.env import getenv
 
 
 def create_app():

@@ -1,13 +1,8 @@
 import time
 from flask import Blueprint, render_template, redirect, url_for, session
-from musicvision.env import getenv
+from musicvision import spotify_app
+from musicvision.spotify import SpotifyUser
 from musicvision.db import query_db, fetch_db
-from musicvision.spotify import (
-    get_user,
-    refresh_token,
-    get_currently_playing,
-    get_playlist,
-)
 
 general_bp = Blueprint("general", __name__)
 
@@ -26,9 +21,7 @@ def index():
     token_refresh_required = current_user["expires_at"] < time.time()
 
     if token_refresh_required:
-        refreshed = refresh_token(
-            getenv("client_id"), getenv("client_secret"), current_user["refresh_token"]
-        )
+        refreshed = spotify_app.refresh_token(current_user["refresh_token"])
 
         current_user["old_token"] = current_user["access_token"]
         current_user["access_token"] = refreshed["access_token"]
@@ -47,15 +40,16 @@ def index():
             current_user,
         )
 
-    user = get_user(current_user["access_token"])
+    user = SpotifyUser(current_user["access_token"])
+    profile = user.get_profile()
 
     if token_refresh_required:
         session["user"] = current_user
 
     return render_template(
         "index.html",
-        name=user["display_name"],
-        followers=user["followers"]["total"],
+        name=profile["display_name"],
+        followers=profile["followers"]["total"],
     )
 
 
@@ -65,7 +59,12 @@ def dashboard():
         return redirect(url_for("auth.login"))
 
     access_token = session["user"]["access_token"]
-    player = get_currently_playing(access_token)
+    user = SpotifyUser(access_token)
+    player = user.get_currently_playing()
+
+    if not player:
+        return render_template("dashboard.html")
+
     song = player["item"]
 
     all_artists = [artist["name"] for artist in song["artists"]]
@@ -79,7 +78,7 @@ def dashboard():
     if song_in_playlist:
         # The playlist id is the last part of the API URL
         id = player["context"]["href"].split("/")[-1]
-        playlist = get_playlist(access_token, id)
+        playlist = user.get_playlist(id)
 
         song["playlist"] = {
             "name": playlist["name"],

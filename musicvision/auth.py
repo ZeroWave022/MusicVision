@@ -1,8 +1,9 @@
 import time
 from flask import Blueprint, render_template, redirect, session, request, g
+from musicvision import spotify_app
+from musicvision.spotify import SpotifyUser
 from musicvision.db import query_db, fetch_db
 from musicvision.env import getenv
-from musicvision.spotify import get_user_token, get_user, gen_user_auth_link
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -23,17 +24,16 @@ def auth_callback():
     if "error" in args:
         return
 
-    client_id = getenv("client_id")
-    client_secret = getenv("client_secret")
     code = args["code"]
 
     # Get user info and set when token expires
-    user_info = get_user_token(client_id, client_secret, code, request.base_url)
+    user_info = spotify_app.get_user_token(code, request.base_url)
 
     user_info["expires_at"] = round(time.time() + user_info["expires_in"])
 
     # Get user profile and add their id to their info
-    user_profile = get_user(user_info["access_token"])
+    user = SpotifyUser(user_info["access_token"])
+    user_profile = user.get_profile()
 
     user_info["id"] = user_profile["id"]
 
@@ -67,11 +67,10 @@ def login():
     if session.get("user"):
         return redirect("/dashboard")
 
-    client_id = getenv("client_id")
     redirect_uri = request.host_url + "auth/callback"
     state = ""  # TBA
     scope = getenv("scope")
 
-    auth_link = gen_user_auth_link(client_id, redirect_uri, scope, state)
+    auth_link = spotify_app.gen_user_auth_link(redirect_uri, scope, state)
 
     return render_template("login.html", auth_link=auth_link)
