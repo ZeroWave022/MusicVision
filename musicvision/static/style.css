@@ -1,29 +1,38 @@
 body {
     font-family: "Montserrat", Arial, Helvetica, sans-serif;
     background-color: rgb(228, 220, 207);
+    margin: 0;
 }
 
 nav {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     width: 90vw;
-    margin: auto;
-    gap: 50px;
+    margin: 10px auto;
     position: relative;
 }
 
 nav a {
     text-decoration: none;
     color: black;
-    padding: 15px;
-    font-size: 22px;
     font-weight: 500;
+}
 
+#nav-center-buttons {
+    display: flex;
+    gap: 50px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#nav-center-buttons a {
+    font-size: 22px;
     transition: 0.2s ease-in-out;
 }
 
-nav a:hover {
+#nav-center-buttons a:hover {
     transition: 0.2s ease-in-out;
     text-shadow: gray 2px 2px 5px;
 }
@@ -31,11 +40,6 @@ nav a:hover {
 #logo {
     display: flex;
     padding: 0;
-    margin-right: auto;
-}
-
-#logo:hover {
-    text-shadow: none;
 }
 
 #logo span {
@@ -56,13 +60,8 @@ nav a:hover {
 #interaction-link {
     font-size: 18px;
     padding: 10px;
-    margin-left: auto;
 
     color: white;
     background-color: rgb(0, 43, 91);
     border-radius: 32px;
-}
-
-#interaction-link:hover {
-    text-shadow: none;
 }

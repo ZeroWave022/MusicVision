@@ -23,11 +23,13 @@
             <span>V</span>
             <span>ision</span>
         </a>
-        <a href="/">Home</a>
-        <a href="/features">Features</a>
-        <a href="/about">About</a>
-        
 
+        <div id="nav-center-buttons">
+            <a href="/">Home</a>
+            <a href="/features">Features</a>
+            <a href="/about">About</a>
+        </div>
+        
         {% if g.user %}
         <a href="/dashboard" id="interaction-link">Dashboard</a>       
         {% else %}
