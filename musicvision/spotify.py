@@ -17,11 +17,11 @@ def _b64_auth_header(client_id, client_secret):
     return f"{b64encode(auth).decode()}"
 
 
-def get_user_auth_link(
+def gen_user_auth_link(
     client_id: str, redirect_uri: str, scope: str, state: str
 ) -> str:
     base_link = API_LINKS["login"]
-    return f"{base_link}?client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}&state={state}"
+    return f"{base_link}?client_id={client_id}&response_type=code&redirect_uri={redirect_uri}&scope={scope}&state={state}"
 
 
 def get_user_token(
