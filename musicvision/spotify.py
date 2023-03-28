@@ -12,176 +12,178 @@ API_LINKS = {
 }
 
 
-def _b64_auth_header(client_id, client_secret):
-    auth = f"{client_id}:{client_secret}".encode()
-    return f"{b64encode(auth).decode()}"
-
-
-def gen_user_auth_link(
-    client_id: str, redirect_uri: str, scope: str, state: str
-) -> str:
-    base_link = API_LINKS["login"]
-    return f"{base_link}?client_id={client_id}&response_type=code&redirect_uri={redirect_uri}&scope={scope}&state={state}"
-
-
-def get_user_token(
-    client_id: str, client_secret: str, code: str, redirect_uri: str
-) -> dict:
-    """Get a user's token after they have approved the app.
-
-    Parameters
-    ----------
-    client_id: `str`
-        Application client id
-    client_secret: `str`
-        Application secret id
-    code: str
-        The code returned from the API on the redirect URI upon authorization
-    redirect_uri:
-        The same redirect URI which was used for the authorization step
-
-    Returns
-    -------
-    `dict`
+class SpotifyApp:
+    """A client for interacting with the Spotify Web API.
+    This class is to be used for interactions as a Spotify App.
+    For interactions as a user, see the SpotifyUser class.
     """
 
-    headers = {
-        "Authorization": f"Basic {_b64_auth_header(client_id, client_secret)}",
-        "Content-Type": "application/x-www-form-urlencoded",
-    }
+    def __init__(self, client_id: str, client_secret: str) -> None:
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.api_links = API_LINKS
 
-    params = {
-        "grant_type": "authorization_code",
-        "code": code,
-        "redirect_uri": redirect_uri,
-    }
+        self.session = requests.Session()
+        self.session.headers = {
+            "Authorization": f"Basic {self._b64_auth_header()}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
 
-    res = requests.post(API_LINKS["token"], params=params, headers=headers)
+    def _b64_auth_header(self) -> str:
+        auth = f"{self.client_id}:{self.client_secret}".encode()
+        return b64encode(auth).decode()
 
-    if not res.ok or res.text == "":
-        raise Exception(
-            "Spotify get_user_token request failed with a non-200 status code or no content was received."
-        )
+    def gen_user_auth_link(self, redirect_uri: str, scope: str, state: str) -> str:
+        """Create a Spotify link where a user can authenticate the app.
 
-    return json.loads(res.text)
+        Parameters
+        ----------
+        redirect_uri: str
+            The redirect URI which will be used.
+        scope: str
+            The scope(s) which the app will used.
+        state: str
+            The generated state to use for this authentication.
 
+        Returns
+        -------
+        `dict`
+        """
+        base_link = self.api_links["login"]
+        return f"{base_link}?client_id={self.client_id}&response_type=code&redirect_uri={redirect_uri}&scope={scope}&state={state}"
 
-def refresh_token(client_id: str, client_secret: str, old_token: str) -> dict:
-    headers = {
-        "Authorization": f"Basic {_b64_auth_header(client_id, client_secret)}",
-        "Content-Type": "application/x-www-form-urlencoded",
-    }
+    def get_user_token(self, code: str, redirect_uri: str) -> dict:
+        """Get a user's token after they have approved the app.
 
-    params = {"grant_type": "refresh_token", "refresh_token": old_token}
+        Parameters
+        ----------
+        code: str
+            The code returned from the API on the redirect URI upon authorization.
+        redirect_uri:
+            The same redirect URI which was used for the authorization step.
 
-    res = requests.post(
-        API_LINKS["token"],
-        params=params,
-        headers=headers,
-    )
+        Returns
+        -------
+        `dict`
+        """
+        params = {
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": redirect_uri,
+        }
 
-    return json.loads(res.text)
+        res = self.session.post(self.api_links["token"], params=params)
 
+        if not res.ok or res.text == "":
+            raise Exception(
+                "Spotify get_user_token request failed with a non-200 status code or no content was received."
+            )
 
-def get_user(access_token: str) -> dict:
-    """Get a user info from the Spotify API.
-    Docs: https://developer.spotify.com/documentation/web-api/reference/get-current-users-profile
+        return json.loads(res.text)
 
-    Parameters
-    ----------
-    access_token: `str`
-        User's bearer access token
+    def refresh_token(self, old_token: str) -> dict:
+        """Refresh a user's token.
 
-    Returns
-    -------
-    `dict`
-    """
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-        "Content-Type": "application/json",
-    }
+        Parameters
+        ----------
+        old_token: str
+            The refresh token for the user which needs a new access token.
 
-    res = requests.get(API_LINKS["current_user"], headers=headers)
+        Returns
+        -------
+        `dict`
+        """
+        params = {"grant_type": "refresh_token", "refresh_token": old_token}
 
-    if not res.ok or res.text == "":
-        raise Exception(
-            "Spotify get_user request failed with a non-200 status code or no content was received."
-        )
+        res = self.session.post(self.api_links["token"], params=params)
 
-    return json.loads(res.text)
-
-
-def get_playback_state(access_token: str):
-    """Get playback state for user.
-    Docs: https://developer.spotify.com/documentation/web-api/reference/get-information-about-the-users-current-playback
-
-    Parameters
-    ----------
-    access_token: `str`
-        User's bearer access token
-
-    Returns
-    -------
-    `dict`
-    """
-    headers = {"Authorization": f"Bearer {access_token}"}
-
-    res = requests.get(API_LINKS["playback_state"], headers=headers)
-
-    if not res.ok or res.text == "":
-        raise Exception(
-            "Spotify get_playback_state request failed with a non-200 status code or no content was received."
-        )
-
-    return json.loads(res.text)
+        return json.loads(res.text)
 
 
-def get_currently_playing(access_token: str):
-    """Get the currently playing track for a user.
-    Docs: https://developer.spotify.com/documentation/web-api/reference/get-the-users-currently-playing-track
-
-    Parameters
-    ----------
-    access_token: `str`
-        User's bearer access token
-
-    Returns
-    -------
-    `dict`
+class SpotifyUser:
+    """A client for interacting with the Spotify API.
+    This class is to be used for interactions as a user.
+    For interactions as a Spotify App, see the SpotifyApp class.
     """
 
-    headers = {"Authorization": f"Bearer {access_token}"}
+    def __init__(self, access_token: str) -> None:
+        self.access_token = access_token
+        self.api_links = API_LINKS
 
-    res = requests.get(API_LINKS["currently_playing"], headers=headers)
+        self.session = requests.Session()
+        self.session.headers = {
+            "Authorization": f"Bearer {self.access_token}",
+            "Content-Type": "application/json",
+        }
 
-    if not res.ok or res.text == "":
-        raise Exception(
-            "Spotify get_currently_playing request failed with a non-200 status code or no content was received."
-        )
+    def get_profile(self) -> dict:
+        """Get this user's profile from the Spotify API.
+        Docs: https://developer.spotify.com/documentation/web-api/reference/get-current-users-profile
 
-    return json.loads(res.text)
+        Returns
+        -------
+        `dict`
+        """
+        res = self.session.get(self.api_links["current_user"])
 
+        if not res.ok or res.text == "":
+            raise Exception(
+                "Spotify get_user request failed with a non-200 status code or no content was received."
+            )
 
-def get_playlist(access_token: str, playlist_id: str):
-    """Get a playlist owned by a user.
-    Docs: https://developer.spotify.com/documentation/web-api/reference/get-playlist
+        return json.loads(res.text)
 
-    Parameters
-    ----------
-    access_token: `str`
-        User's bearer access token
+    def get_playback_state(self) -> dict:
+        """Get playback state for this user.
+        Docs: https://developer.spotify.com/documentation/web-api/reference/get-information-about-the-users-current-playback
 
-    Returns
-    -------
-    `dict`
-    """
-    headers = {"Authorization": f"Bearer {access_token}"}
+        Returns
+        -------
+        `dict`
+        """
+        res = self.session.get(self.api_links["playback_state"])
 
-    res = requests.get(API_LINKS["playlist"] + playlist_id, headers=headers)
+        if not res.ok or res.text == "":
+            raise Exception(
+                "Spotify get_playback_state request failed with a non-200 status code or no content was received."
+            )
 
-    if not res.ok or res.text == "":
-        raise Exception(
-            "Spotify get_playlist request failed with a non-200 status code or no content was received."
-        )
+        return json.loads(res.text)
 
-    return json.loads(res.text)
+    def get_currently_playing(self) -> dict | bool:
+        """Get the currently playing track for this user.
+        Docs: https://developer.spotify.com/documentation/web-api/reference/get-the-users-currently-playing-track
+
+        Returns
+        -------
+        `dict` if successful.
+        Returns `False` if nothing is playing.
+        """
+        res = self.session.get(self.api_links["currently_playing"])
+
+        if not res.ok or res.text == "":
+            return False
+
+        return json.loads(res.text)
+
+    def get_playlist(self, playlist_id: str) -> dict:
+        """Get a playlist owned by a user.
+        Docs: https://developer.spotify.com/documentation/web-api/reference/get-playlist
+
+        Parameters
+        ----------
+        playlist_id: `str`
+            The Spotify ID of the playlist.
+
+        Returns
+        -------
+        `dict`
+        """
+        res = self.session.get(self.api_links["playlist"] + playlist_id)
+
+        if not res.ok or res.text == "":
+            raise Exception(
+                "Spotify get_playlist request failed with a non-200 status code or no content was received."
+            )
+
+        return json.loads(res.text)
