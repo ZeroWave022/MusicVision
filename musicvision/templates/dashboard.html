@@ -17,6 +17,7 @@
                 <img src="{{ url_for('static', filename='icons/Spotify_Logo_Green.png') }}" alt="Spotify Logo">
                 <h1>Now Playing</h1>
                 <img src="{{ song['album']['images'][0]['url'] }}" alt="Album cover">
+
                 <div id="track-info">
                     <h1>{{ song["name"] }}</h1>
                     <h2>By {{ song['all_artists'] }}</h2>
@@ -25,6 +26,12 @@
                         <h2>
                             Playlist: <a href="{{ song['playlist']['url'] }}">{{ song["playlist"]["name"] }}</a>
                         </h2>
+                    {% endif %}
+                    
+                    {% if is_playing %}
+                        <img src="{{ url_for('static', filename='icons/circle-play-solid.svg')}}" class="play-button" onclick="play_button_event()">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='icons/circle-pause-solid.svg')}}" class="play-button" onclick="play_button_event()">
                     {% endif %}
                 </div>
             </div>

@@ -31,10 +31,11 @@
 /* Now Playing grid element */
 #now-playing-grid {
     display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
     justify-items: center;
-    grid-template-columns: 1fr 1fr;
     gap: 15px;
+    text-align: center;
 }
 
 #now-playing-grid img {
@@ -43,6 +44,12 @@
 
 #now-playing-grid h1 {
     font-weight: 300;
+}
+
+#now-playing-grid .play-button {
+    width: 20%;
+    height: 20%;
+    cursor: pointer;
 }
 
 /* Track info, as part of the Now Playing element */
