@@ -86,3 +86,23 @@ def dashboard():
         }
 
     return render_template("dashboard.html", song=song, is_playing=player["is_playing"])
+
+
+@general_bp.route("/top_artists")
+def top_artists():
+    if not session.get("user"):
+        return redirect(url_for("auth.login"))
+
+    user = SpotifyUser(session["user"]["access_token"])
+    artists_raw = user.get_top_artists("medium_term", 25)
+    artists = artists_raw["items"]
+
+    for artist in artists:
+        artist["genres"] = [i.capitalize() for i in artist["genres"]]
+        artist["genres"] = ", ".join(artist["genres"][:3])
+
+    artists_sorted = sorted(
+        artists_raw["items"], key=lambda i: i["popularity"], reverse=True
+    )
+
+    return render_template("top_artists.html", artists=enumerate(artists_sorted))

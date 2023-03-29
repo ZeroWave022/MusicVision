@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block additional_head_info %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='top_artists.css') }}">
+{% endblock %}
+
+{% block title %}
+    Top Artists
+{% endblock %}
+
+{% block main %}
+    <h1>Top Artists</h1>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Artist</th>
+                    <th>Genres</th>
+                    <th>Popularity</th>
+                    <th>Followers</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for index, artist in artists %}
+                <tr>
+                    <td>{{ index + 1 }}</td>
+                    <td>
+                        <div class="artist-td">
+                            <img src="{{ artist ['images'][0]['url'] }}" alt="Artist profile picture">
+                            <a href="{{ artist['external_urls']['spotify']}}">{{ artist["name"] }}</a>
+                        </div>
+                    </td>
+                    <td>{{ artist["genres"] if artist["genres"] else "None listed" }}</td>
+                    <td>{{ artist["popularity"] }}/100</td>
+                    <td>{{ artist["followers"]["total"] }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
