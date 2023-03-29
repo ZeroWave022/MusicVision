@@ -31,7 +31,7 @@ pip3 -r requirements.txt
 
 ## Setting up environmental variables
 The app uses multiple secrets which should never be publicly available.
-That's why a `.env`-file is used for storing these.
+That's why a `.env` file is used for storing these.
 
 A template follows below:
 
@@ -59,8 +59,8 @@ Run `setup_db.py` to create the needed database which will be used.
 MusicVision can now be run by executing `app.py` with Python.
 
 # License
-This project is licensed under the Apache License 2.0.
+This project is licensed under the [Apache License 2.0](https://github.com/ZeroWave022/MusicVision/blob/main/LICENSE).
 
 # Acknowledgements
-This projects is in no way associated with Spotify or any other streaming services.
+This project or its author(s) are in no way associated with Spotify or any other streaming services.
 The Spotify API is used in accordance with the [Spotify Developer Terms](https://developer.spotify.com/terms/).
