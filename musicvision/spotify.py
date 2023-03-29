@@ -9,6 +9,7 @@ API_LINKS = {
     "playback_state": "https://api.spotify.com/v1/me/player",
     "currently_playing": "https://api.spotify.com/v1/me/player/currently-playing",
     "playlist": "https://api.spotify.com/v1/playlists/",
+    "top": "https://api.spotify.com/v1/me/top/",
 }
 
 
@@ -184,6 +185,43 @@ class SpotifyUser:
         if not res.ok or res.text == "":
             raise Exception(
                 "Spotify get_playlist request failed with a non-200 status code or no content was received."
+            )
+
+        return json.loads(res.text)
+
+    def get_top_artists(
+        self, time_range: str, limit: int = 20, offset: int = 0
+    ) -> dict:
+        """Get top artists for a user.
+        Docs: https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks
+
+        Parameters
+        ----------
+        time_range: `str`
+            The time frame which should be used to calculate artist popularities.
+            Possible values: `"short_term"`, `"medium_term"` or `"long_term"`.
+        limit: `str`
+            The number of items.
+        offset: `str`
+            The index of the first item which will be returned.
+
+        Returns
+        -------
+        `dict`
+        """
+
+        if time_range not in ["short_term", "medium_term", "long_term"]:
+            raise ValueError(
+                'The `time_frame` parameter must be one of the following: "short_term", "medium_term", "long_term".'
+            )
+
+        params = {"limit": limit, "offset": offset}
+
+        res = self.session.get(self.api_links["top"] + "artists", params=params)
+
+        if not res.ok or res.text == "":
+            raise Exception(
+                "Spotify get_top_artists request failed with a non-200 status code or no content was received."
             )
 
         return json.loads(res.text)
