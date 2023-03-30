@@ -69,7 +69,7 @@ def login():
 
     redirect_uri = request.host_url + "auth/callback"
     state = ""  # TBA
-    scope = getenv("scope")
+    scope = getenv("SCOPE")
 
     auth_link = spotify_app.gen_user_auth_link(redirect_uri, scope, state)
 

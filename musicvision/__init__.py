@@ -3,7 +3,7 @@ from musicvision.spotify import SpotifyApp
 from musicvision.env import getenv
 
 # Set globally used SpotifyApp client
-spotify_app = SpotifyApp(getenv("client_id"), getenv("client_secret"))
+spotify_app = SpotifyApp(getenv("CLIENT_ID"), getenv("CLIENT_SECRET"))
 
 # Import these submodules later, as they require spotify_app
 from musicvision.general import general_bp
