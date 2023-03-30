@@ -191,14 +191,17 @@ class SpotifyUser:
 
         return json.loads(res.text)
 
-    def get_top_artists(
-        self, time_range: str, limit: int = 20, offset: int = 0
+    def get_top(
+        self, item_type: str, time_range: str, limit: int = 20, offset: int = 0
     ) -> dict:
-        """Get top artists for a user.
+        """Get top artists or tracks for a user.
         Docs: https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks
 
         Parameters
         ----------
+        item_type: `str`
+            Whether to get top artists or tracks.
+            Possible values: `"artists"` or `"tracks"`.
         time_range: `str`
             The time frame which should be used to calculate artist popularities.
             Possible values: `"short_term"`, `"medium_term"` or `"long_term"`.
@@ -212,6 +215,11 @@ class SpotifyUser:
         `dict`
         """
 
+        if item_type not in ["artists", "tracks"]:
+            raise ValueError(
+                'The `item_type` parameter must be one of the following: "artists" or "tracks".'
+            )
+
         if time_range not in ["short_term", "medium_term", "long_term"]:
             raise ValueError(
                 'The `time_frame` parameter must be one of the following: "short_term", "medium_term", "long_term".'
@@ -219,11 +227,11 @@ class SpotifyUser:
 
         params = {"limit": limit, "offset": offset}
 
-        res = self.session.get(self.api_links["top"] + "artists", params=params)
+        res = self.session.get(self.api_links["top"] + item_type, params=params)
 
         if not res.ok or res.text == "":
             raise Exception(
-                "Spotify get_top_artists request failed with a non-200 status code or no content was received."
+                "Spotify get_top request failed with a non-200 status code or no content was received."
             )
 
         return json.loads(res.text)

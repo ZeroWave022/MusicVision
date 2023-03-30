@@ -94,7 +94,7 @@ def top_artists():
         return redirect(url_for("auth.login"))
 
     user = SpotifyUser(session["user"]["access_token"])
-    artists_raw = user.get_top_artists("medium_term", 25)
+    artists_raw = user.get_top("artists", "medium_term", 25)
     artists = artists_raw["items"]
 
     for artist in artists:
