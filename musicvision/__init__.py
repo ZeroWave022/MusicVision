@@ -8,6 +8,7 @@ spotify_app = SpotifyApp(getenv("client_id"), getenv("client_secret"))
 # Import these submodules later, as they require spotify_app
 from musicvision.general import general_bp
 from musicvision.auth import auth_bp
+from musicvision.api import api_bp
 
 
 def create_app():
@@ -16,5 +17,6 @@ def create_app():
 
     app.register_blueprint(general_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(api_bp)
 
     return app
