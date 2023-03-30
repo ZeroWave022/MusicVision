@@ -29,9 +29,9 @@
                     {% endif %}
                     
                     {% if is_playing %}
-                        <img src="{{ url_for('static', filename='icons/circle-play-solid.svg')}}" class="play-button" onclick="play_button_event()">
-                    {% else %}
                         <img src="{{ url_for('static', filename='icons/circle-pause-solid.svg')}}" class="play-button" onclick="play_button_event()">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='icons/circle-play-solid.svg')}}" class="play-button" onclick="play_button_event()">
                     {% endif %}
                 </div>
             </div>
@@ -46,4 +46,8 @@
             <a href="/top_artists">Your top artists</a>
         </div>
     </div>
+{% endblock %}
+
+{% block additional_body %}
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 {% endblock %}
