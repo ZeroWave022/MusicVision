@@ -10,6 +10,8 @@ API_LINKS = {
     "currently_playing": "https://api.spotify.com/v1/me/player/currently-playing",
     "playlist": "https://api.spotify.com/v1/playlists/",
     "top": "https://api.spotify.com/v1/me/top/",
+    "start_playback": "https://api.spotify.com/v1/me/player/play",
+    "pause_playback": "https://api.spotify.com/v1/me/player/pause",
 }
 
 
@@ -225,3 +227,30 @@ class SpotifyUser:
             )
 
         return json.loads(res.text)
+
+    def toggle_playback(self, toggle: bool) -> bool:
+        """Toggle playback for a user.
+        Docs (play): https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback
+        Docs (pause): https://developer.spotify.com/documentation/web-api/reference/pause-a-users-playback
+
+        Parameters
+        ----------
+        toggle: `bool`
+            Whether to resume or pause playback for this user.
+            `True` to resume, `False` to pause.
+
+        Returns
+        -------
+        `bool`
+            `True` if successful, `False` if failed.
+        """
+
+        if toggle:
+            res = self.session.put(self.api_links["start_playback"])
+        else:
+            res = self.session.put(self.api_links["pause_playback"])
+
+        if res.status_code != 204:
+            return False
+
+        return True
