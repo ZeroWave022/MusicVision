@@ -106,3 +106,17 @@ def top_artists():
     )
 
     return render_template("top_artists.html", artists=enumerate(artists_sorted))
+
+
+@general_bp.route("/top_tracks")
+def top_tracks():
+    if not session.get("user"):
+        return redirect(url_for("auth.login"))
+
+    user = SpotifyUser(session["user"]["access_token"])
+    tracks_raw = user.get_top("tracks", "medium_term", 25)
+
+    tracks = tracks_raw["items"]
+    tracks = sorted(tracks, key=lambda i: i["popularity"], reverse=True)
+
+    return render_template("top_tracks.html", tracks=enumerate(tracks))
