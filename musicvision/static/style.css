@@ -99,14 +99,18 @@ nav a {
     border-radius: 32px;
 }
 
-.site-info {
+.info-row {
     display: flex;
     padding: 0 5vw;
     gap: 100px;
 }
 
-.site-info h1, .site-info h2 {
+.info-row h1, .info-row h2 {
     margin: 0.25em 0;
+}
+
+.info-box {
+    flex: 1;
 }
 
 .described-image img {
