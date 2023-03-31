@@ -39,9 +39,8 @@ A template follows below:
 # Flask
 FLASK_SECRET_KEY=""
 
-# PostgreSQL Database
+# PostgreSQL Database URI with database name included (for example "musicvision")
 DB_URI=""
-DB_NAME=""
 
 # Spotify
 CLIENT_ID=""
