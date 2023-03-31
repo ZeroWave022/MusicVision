@@ -116,8 +116,8 @@ nav a {
 
 footer {
     display: flex;
-    height: 50vh;
-    padding: 50px 25px 10px 25px;
+    height: 25vh;
+    padding: 5px 5vw;
     margin-top: 50px;
     background-color: rgba(249, 245, 235, 0.9);
     border-top: 5px solid hsl(37, 27%, 75%);
