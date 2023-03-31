@@ -9,7 +9,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     width: 90vw;
-    margin: 10px auto;
+    margin: 10px auto 50px auto;
     position: relative;
 }
 
@@ -66,6 +66,27 @@ nav a {
     border-radius: 32px;
 }
 
+.site-info {
+    display: flex;
+    padding: 0 5vw;
+    gap: 100px;
+}
+
+.site-info h1, .site-info h2 {
+    margin: 0.25em 0;
+}
+
+.described-image img {
+    max-height: 450px;
+}
+
+.described-image p {
+    text-align: right;
+}
+
+.green {
+    color: rgb(0, 175, 80);
+}
 
 footer {
     display: flex;

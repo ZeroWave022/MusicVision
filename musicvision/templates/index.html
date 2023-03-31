@@ -5,9 +5,19 @@
 {% endblock %}
 
 {% block main %}
-    <h1>Home</h1>
-    {% if g.user %}
-        <p>Your display name is {{ name }}.</p>
-        <p>You have {{ followers }} followers.</p>
-    {% endif %}
+    <div class="site-info">
+        <div>
+            <h1>All your <span class="green">Spotify</span> information in one place</h1>
+            <h2>Discover your MusicVision Dashboard</h2>
+            <p>
+                MusicVision provides you with your favorite artists and tracks,
+                gives you the ability to sort the data to your liking,
+                and much more.
+            </p>
+        </div>
+        <div class="described-image">
+            <img src="{{ url_for('static', filename='images/infographic.svg') }}" alt="Infographic">
+            <p>Image retrieved from Pixabay</p>
+        </div>
+    </div>
 {% endblock %}
