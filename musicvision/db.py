@@ -5,8 +5,7 @@ from musicvision.env import getenv
 
 def get_db_connection():
     DB_URI = getenv("DB_URI")
-    DB_NAME = getenv("DB_NAME").lower()
-    return connect(f"{DB_URI}/{DB_NAME}", row_factory=dict_row)
+    return connect(f"{DB_URI}", row_factory=dict_row)
 
 
 def query_db(query: str, params: list = None) -> None:
