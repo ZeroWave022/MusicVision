@@ -1,10 +1,18 @@
 {% extends "layout.html" %}
 
+{% block additional_head_info %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
 {% block title %}
     Frontpage
 {% endblock %}
 
 {% block main %}
     <h1>Login</h1>
-    <p>Log in to <a href="{{ auth_link }}">Spotify</a>.</p>
+    <a class="login-button" href="{{ auth_link }}">
+        <span>Log in with Spotify</span>
+        <img src="{{ url_for('static', filename='icons/angle-right-solid.svg') }}" alt="Angle icon pointing right">
+    </a>
+    <p>You can always unlink MusicVision, or any other Spotify App, from your account using your <a class="styled-link" href="https://www.spotify.com/account/apps/">Spotify Account</a> page.</p>
 {% endblock %}
