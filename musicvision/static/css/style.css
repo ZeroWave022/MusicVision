@@ -101,7 +101,8 @@ nav a {
 
 .info-row {
     display: flex;
-    padding: 0 5vw;
+    margin: auto;
+    width: fit-content;
     gap: 100px;
 }
 
@@ -119,6 +120,7 @@ nav a {
 
 .described-image p {
     text-align: right;
+    margin: 5px 0;
 }
 
 .green {
@@ -130,6 +132,7 @@ footer {
     height: 25vh;
     padding: 5px 5vw;
     margin-top: 50px;
+    gap: 50px;
     background-color: rgba(249, 245, 235, 0.9);
     border-top: 5px solid hsl(37, 27%, 75%);
 }
