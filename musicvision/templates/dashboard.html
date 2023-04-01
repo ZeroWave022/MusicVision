@@ -28,9 +28,9 @@
                         </h2>
                     {% endif %}
                     
-                    {% if is_playing %}
+                    {% if player["enabled"] and player["is_playing"] %}
                         <img src="{{ url_for('static', filename='icons/circle-pause-solid.svg')}}" class="play-button" onclick="play_button_event()">
-                    {% else %}
+                    {% elif player["enabled"] and not player["is_playing"] %}
                         <img src="{{ url_for('static', filename='icons/circle-play-solid.svg')}}" class="play-button" onclick="play_button_event()">
                     {% endif %}
                 </div>

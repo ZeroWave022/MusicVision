@@ -85,7 +85,14 @@ def dashboard():
             "url": playlist["external_urls"]["spotify"],
         }
 
-    return render_template("dashboard.html", song=song, is_playing=player["is_playing"])
+    # Check if user has premium. Play/pause API calls are locked behind premium.
+    user_profile = user.get_profile()
+    simple_player = {
+        "enabled": user_profile.get("product") == "premium",
+        "is_playing": player["is_playing"],
+    }
+
+    return render_template("dashboard.html", song=song, player=simple_player)
 
 
 @general_bp.route("/top_artists")
