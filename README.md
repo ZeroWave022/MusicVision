@@ -60,6 +60,6 @@ MusicVision can now be run by executing `app.py` with Python.
 # License
 This project is licensed under the [Apache License 2.0](https://github.com/ZeroWave022/MusicVision/blob/main/LICENSE).
 
-# Acknowledgements
+# Disclaimer
 This project or its author(s) are in no way associated with Spotify or any other streaming services.
 The Spotify API is used in accordance with the [Spotify Developer Terms](https://developer.spotify.com/terms/).
