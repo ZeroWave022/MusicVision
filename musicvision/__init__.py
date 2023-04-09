@@ -10,6 +10,7 @@ from musicvision.general import general_bp
 from musicvision.dashboard import dashboard_bp
 from musicvision.auth import auth_bp
 from musicvision.api import api_bp
+from musicvision.legal import legal_bp
 
 
 def create_app():
@@ -20,5 +21,6 @@ def create_app():
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(api_bp)
+    app.register_blueprint(legal_bp)
 
     return app
