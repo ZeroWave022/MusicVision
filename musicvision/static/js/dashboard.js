@@ -4,7 +4,8 @@ const icons = {
 }
 
 async function play_button_event() {
-    let res = await fetch("./api/toggle_player", {
+    baseURL = document.location.origin;
+    let res = await fetch(`${baseURL}/api/toggle_player`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"

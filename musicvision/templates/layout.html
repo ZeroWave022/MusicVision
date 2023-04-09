@@ -31,9 +31,9 @@
         </div>
         
         {% if g.user %}
-        <a href="/dashboard" id="interaction-link">Dashboard</a>       
+        <a href="{{ url_for('dashboard.index') }}" id="interaction-link">Dashboard</a>       
         {% else %}
-        <a href="/auth/login" id="interaction-link">Login</a>
+        <a href="{{ url_for('auth.login') }}" id="interaction-link">Login</a>
         {% endif %}
     </nav>
 
@@ -46,19 +46,19 @@
     <footer>
         <div>
             <h1>MusicVision</h1>
-            <a class="styled-link block-link" href="/features">
+            <a class="styled-link block-link" href="{{ url_for('general.features') }}">
                 Features
             </a>
-            <a class="styled-link block-link" href="/about">
+            <a class="styled-link block-link" href="{{ url_for('general.about') }}">
                 About
             </a>
         </div>
         <div>
             <h1>Shortcuts</h1>
-            <a class="styled-link block-link" href="/top_artists">
+            <a class="styled-link block-link" href="{{ url_for('dashboard.top_artists') }}">
                 Your top artists
             </a>
-            <a class="styled-link block-link" href="/top_tracks">
+            <a class="styled-link block-link" href="{{ url_for('dashboard.top_tracks') }}">
                 Your top tracks
             </a>
         </div>
