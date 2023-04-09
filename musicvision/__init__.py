@@ -1,3 +1,4 @@
+import logging
 from flask import Flask
 from musicvision.spotify import SpotifyApp
 from musicvision.env import getenv
@@ -5,12 +6,18 @@ from musicvision.env import getenv
 # Set globally used SpotifyApp client
 spotify_app = SpotifyApp(getenv("CLIENT_ID"), getenv("CLIENT_SECRET"))
 
-# Import these submodules later, as they require spotify_app
+# Import these modules later, as some of them require spotify_app
 from musicvision.general import general_bp
 from musicvision.dashboard import dashboard_bp
 from musicvision.auth import auth_bp
 from musicvision.api import api_bp
 from musicvision.legal import legal_bp
+
+# Set up logging when package is initialized
+logging.basicConfig(
+    format="[%(levelname)s] [%(asctime)s] [%(module)s]: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 
 
 def create_app():
