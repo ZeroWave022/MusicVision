@@ -74,3 +74,9 @@ def login():
     auth_link = spotify_app.gen_user_auth_link(redirect_uri, scope, state)
 
     return render_template("login.html", auth_link=auth_link)
+
+
+@auth_bp.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")

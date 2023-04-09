@@ -45,6 +45,9 @@
             <h3>View more information</h3>
             <a href="{{ url_for('dashboard.top_artists') }}">Your top artists</a>
             <a href="{{ url_for('dashboard.top_tracks') }}">Your top tracks</a>
+            
+            <h3>Manage your account</h3>
+            <a href="{{ url_for('auth.logout')}}">Log out</a>
         </div>
     </div>
 {% endblock %}
