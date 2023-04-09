@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block additional_head_info %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+
+{% block title %}
+    Frontpage
+{% endblock %}
+
+{% block main %}
+    {% if not deleted %}
+        <h1>Delete your MusicVision account</h1>
+        <h3>Are you sure you want to delete your account?</h3>
+        <p>Your Spotify username associated with MusicVision is: {{ username }}</p>
+        <p>
+            To delete all your data, press the button below.<br>
+            <strong>Caution:</strong> This action is irreversible, but you may create a new account at a later point in time.
+        </p>
+        
+        <form action="" method="post">
+            <button>
+                <span>Delete my account</span>
+                <img src="{{ url_for('static', filename='icons/angle-right-solid.svg') }}" alt="Angle icon pointing right">
+            </button>
+        </form>
+    {% else %}
+        <h1>Your MusicVision account has been deleted</h1>
+        <p>Your account and all data associated with it has been deleted. If you'd like to return, you can make a new account at any time.</p>
+    {% endif %}
+{% endblock %}
