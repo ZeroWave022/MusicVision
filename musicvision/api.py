@@ -4,7 +4,7 @@ from musicvision.spotify import SpotifyUser
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 
-@api_bp.post("/toggle_player")
+@api_bp.post("/toggle-player")
 def toggle_player():
     if not session.get("user"):
         return abort(401)

@@ -47,7 +47,7 @@ def index():
     return render_template("dashboard/index.html", song=song, player=simple_player)
 
 
-@dashboard_bp.route("/top_artists")
+@dashboard_bp.route("/top-artists")
 def top_artists():
     if not session.get("user"):
         return redirect(url_for("auth.login"))
@@ -65,11 +65,11 @@ def top_artists():
     )
 
     return render_template(
-        "dashboard/top_artists.html", artists=enumerate(artists_sorted)
+        "dashboard/top-artists.html", artists=enumerate(artists_sorted)
     )
 
 
-@dashboard_bp.route("/top_tracks")
+@dashboard_bp.route("/top-tracks")
 def top_tracks():
     if not session.get("user"):
         return redirect(url_for("auth.login"))
@@ -80,10 +80,10 @@ def top_tracks():
     tracks = tracks_raw["items"]
     tracks = sorted(tracks, key=lambda i: i["popularity"], reverse=True)
 
-    return render_template("dashboard/top_tracks.html", tracks=enumerate(tracks))
+    return render_template("dashboard/top-tracks.html", tracks=enumerate(tracks))
 
 
-@dashboard_bp.get("delete_account")
+@dashboard_bp.get("delete-account")
 def delete_account():
     if not session.get("user"):
         return redirect(url_for("auth.login"))
@@ -96,7 +96,7 @@ def delete_account():
     )
 
 
-@dashboard_bp.post("delete_account")
+@dashboard_bp.post("delete-account")
 def delete_account_post():
     if not session.get("user"):
         return redirect(url_for("auth.login"))
