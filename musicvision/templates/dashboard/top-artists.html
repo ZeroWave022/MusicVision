@@ -10,11 +10,10 @@
 
 {% block main %}
     <h1>Top Artists</h1>
-    <div class="filters">
-        <h3>Filter by</h3>
-        <a href="">All time</a>
-        <a href="">Last 6 months</a>
-        <a href="">Last 4 weeks</a>
+    <div class="choice-links">
+        <a class="{{ 'active' if filter == 'long_term' }}" href="?f=long_term&p=1">All time</a>
+        <a class="{{ 'active' if filter == 'medium_term' }}" href="?f=medium_term&p=1">Last 6 months</a>
+        <a class="{{ 'active' if filter == 'short_term' }}" href="?f=short_term&p=1">Last 4 weeks</a>
     </div>
     <div class="table-container">
         <table>
@@ -28,7 +27,7 @@
                 </tr>
             </thead>
             <tbody>
-            {% for index, artist in artists %}
+                {% for index, artist in artists %}
                 <tr>
                     <td>{{ index + 1 }}</td>
                     <td>
@@ -41,8 +40,23 @@
                     <td>{{ artist["popularity"] }}/100</td>
                     <td>{{ artist["followers"]["total"] }}</td>
                 </tr>
-            {% endfor %}
+                {% endfor %}
             </tbody>
         </table>
     </div>
+    <div class="choice-links">
+        {% if page - 1 > 0 %}
+        <a href="?f={{ filter }}&p={{ page - 1 }}">
+            <img class="icon" src="{{ url_for('static', filename='icons/angle-left-solid.svg') }}" alt="Angle icon pointing left">
+                <span>Previous page</span>
+            </a>
+            {% endif %}
+            {% if page + 1 < 6 %}
+            <a href="?f={{ filter }}&p={{ page + 1 }}">
+                <span>Next page</span>
+                <img class="icon" src="{{ url_for('static', filename='icons/angle-right-solid.svg') }}" alt="Angle icon pointing right">
+            </a>
+            {% endif %}
+    </div>
+    <p class="page-counter">Page {{ page }} of 5</p>
 {% endblock %}
