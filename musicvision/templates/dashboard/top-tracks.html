@@ -35,10 +35,10 @@
                         <div class="item-td">
                             <img src="{{ track['album']['images'][0]['url'] }}" alt="Album cover">
                             <div class="track-info">
-                                <a href="{{ track['external_urls']['spotify']}}">{{ track["name"] }}</a>
+                                <a class="styled-link" href="{{ track['external_urls']['spotify']}}">{{ track["name"] }}</a>
                                 {% if track["album"]["album_type"] in ["ALBUM", "COMPILATION"] %}
                                     <p>
-                                        Album: <a href="{{ track['album']['external_urls']['spotify'] }}">{{ track['album']['name'] }}</a>
+                                        Album: <a class="styled-link" href="{{ track['album']['external_urls']['spotify'] }}">{{ track['album']['name'] }}</a>
                                     </p>
                                 {% endif %}
                             </div>
@@ -46,7 +46,7 @@
                     </td>
                     <td class="track-artists-td">
                         {% for artist in track["artists"] %}
-                            <a href="{{ artist['external_urls']['spotify'] }}">{{ artist["name"] }}</a>
+                            <a class="styled-link" href="{{ artist['external_urls']['spotify'] }}">{{ artist["name"] }}</a>
                         {% endfor %}
                     </td>
                     <td>{{ track["popularity"] }}/100</td>

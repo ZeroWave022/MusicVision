@@ -87,5 +87,6 @@ td {
 
 .track-artists-td a {
     display: block;
-    margin: 5px 0;
+    width: fit-content;
+    margin: 5px auto;
 }

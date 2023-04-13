@@ -33,7 +33,7 @@
                     <td>
                         <div class="item-td">
                             <img src="{{ artist['images'][0]['url'] }}" alt="Artist profile picture">
-                            <a href="{{ artist['external_urls']['spotify'] }}">{{ artist["name"] }}</a>
+                            <a class="styled-link" href="{{ artist['external_urls']['spotify'] }}">{{ artist["name"] }}</a>
                         </div>
                     </td>
                     <td>{{ artist["genres"] if artist["genres"] else "None listed" }}</td>
