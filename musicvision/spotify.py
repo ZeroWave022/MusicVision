@@ -225,7 +225,7 @@ class SpotifyUser:
                 'The `time_frame` parameter must be one of the following: "short_term", "medium_term", "long_term".'
             )
 
-        params = {"limit": limit, "offset": offset}
+        params = {"time_range": time_range, "limit": limit, "offset": offset}
 
         res = self.session.get(self.api_links["top"] + item_type, params=params)
 
