@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block additional_head_info %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/top_tracks.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/top.css') }}">
 {% endblock %}
 
 {% block title %}
@@ -9,10 +9,8 @@
 {% endblock %}
 
 {% block main %}
-    <div class="page-info">
-        <h1>Top Tracks</h1>
-        <p>Note: Album is not shown if the track is a single.</p>
-    </div>
+    <h1>Top Tracks</h1>
+    <p>Note: Album is not shown if the track is a single.</p>
     <div class="table-container">
         <table>
             <thead>
@@ -29,7 +27,7 @@
                 <tr>
                     <td>{{ index + 1 }}</td>
                     <td>
-                        <div class="track-td">
+                        <div class="item-td">
                             <img src="{{ track['album']['images'][0]['url'] }}" alt="Album cover">
                             <div class="track-info">
                                 <a href="{{ track['external_urls']['spotify']}}">{{ track["name"] }}</a>
@@ -39,7 +37,6 @@
                                     </p>
                                 {% endif %}
                             </div>
-                            
                         </div>
                     </td>
                     <td class="track-artists-td">

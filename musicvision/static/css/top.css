@@ -1,7 +1,3 @@
-h1 {
-    text-align: center;
-}
-
 .table-container {
     width: 75vw;
     margin: auto;
@@ -33,12 +29,23 @@ td {
     text-align: center;
 }
 
-.artist-td {
+.item-td {
     display: flex;
     align-items: center;
     gap: 25px;
 }
 
-.artist-td img {
+.item-td img {
     max-width: 160px;
+}
+
+/* Only for top tracks page */
+.track-info p {
+    display: block;
+    margin: 5px 0;
+}
+
+.track-artists-td a {
+    display: block;
+    margin: 5px 0;
 }

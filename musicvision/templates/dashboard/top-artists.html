@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block additional_head_info %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/top_artists.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/top.css') }}">
 {% endblock %}
 
 {% block title %}
@@ -10,6 +10,12 @@
 
 {% block main %}
     <h1>Top Artists</h1>
+    <div class="filters">
+        <h3>Filter by</h3>
+        <a href="">All time</a>
+        <a href="">Last 6 months</a>
+        <a href="">Last 4 weeks</a>
+    </div>
     <div class="table-container">
         <table>
             <thead>
@@ -26,9 +32,9 @@
                 <tr>
                     <td>{{ index + 1 }}</td>
                     <td>
-                        <div class="artist-td">
-                            <img src="{{ artist ['images'][0]['url'] }}" alt="Artist profile picture">
-                            <a href="{{ artist['external_urls']['spotify']}}">{{ artist["name"] }}</a>
+                        <div class="item-td">
+                            <img src="{{ artist['images'][0]['url'] }}" alt="Artist profile picture">
+                            <a href="{{ artist['external_urls']['spotify'] }}">{{ artist["name"] }}</a>
                         </div>
                     </td>
                     <td>{{ artist["genres"] if artist["genres"] else "None listed" }}</td>
