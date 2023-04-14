@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, abort, session, request
 from musicvision.spotify import SpotifyUser
-from musicvision.db import fetch_db, query_db
+from musicvision.db import User
 
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
@@ -133,15 +133,14 @@ def delete_account_post():
 
     token = session["user"]["access_token"]
 
-    possible_user = fetch_db(
-        "SELECT * FROM users WHERE access_token = %s", "one", [token]
-    )
-    if not possible_user:
+    try:
+        db_user: User = User.get(User.access_token == token)
+    except:
         session.clear()
         return redirect("/")
 
     try:
-        query_db("DELETE FROM users WHERE access_token = %s", [token])
+        db_user.delete_instance()
     except Exception as e:
         print(e)
         return abort(500)

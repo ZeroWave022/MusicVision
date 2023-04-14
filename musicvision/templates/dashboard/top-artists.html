@@ -50,13 +50,13 @@
             <img class="icon" src="{{ url_for('static', filename='icons/angle-left-solid.svg') }}" alt="Angle icon pointing left">
                 <span>Previous page</span>
             </a>
-            {% endif %}
-            {% if page + 1 < 6 %}
+        {% endif %}
+        {% if page + 1 < 6 %}
             <a href="?f={{ filter }}&p={{ page + 1 }}">
                 <span>Next page</span>
                 <img class="icon" src="{{ url_for('static', filename='icons/angle-right-solid.svg') }}" alt="Angle icon pointing right">
             </a>
-            {% endif %}
+        {% endif %}
     </div>
     <p class="page-counter">Page {{ page }} of 5</p>
 {% endblock %}
