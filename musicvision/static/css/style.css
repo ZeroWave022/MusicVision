@@ -102,17 +102,14 @@ nav a {
 
 .info-row {
     display: flex;
+    justify-content: center;
     margin: auto;
-    width: fit-content;
-    gap: 100px;
+    width: 90vw;
+    gap: 50px;
 }
 
 .info-row h1, .info-row h2 {
     margin: 0.25em 0;
-}
-
-.info-box {
-    flex: 1;
 }
 
 .described-image img {
@@ -122,6 +119,7 @@ nav a {
 .described-image p {
     text-align: right;
     margin: 5px 0;
+    font-size: 14px;
 }
 
 .green {
