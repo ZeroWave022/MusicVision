@@ -19,12 +19,12 @@
                 <img src="{{ song['album']['images'][0]['url'] }}" alt="Album cover">
 
                 <div id="track-info">
-                    <h1>{{ song["name"] }}</h1>
+                    <h1><a class="styled-link" href="{{ song['external_urls']['spotify'] }}">{{ song["name"] }}</a></h1>
                     <h2>By {{ song['all_artists'] }}</h2>
                     
                     {% if song.get("playlist") %}
                         <h2>
-                            Playlist: <a href="{{ song['playlist']['url'] }}">{{ song["playlist"]["name"] }}</a>
+                            Playlist: <a class="styled-link" href="{{ song['playlist']['url'] }}">{{ song["playlist"]["name"] }}</a>
                         </h2>
                     {% endif %}
                     
@@ -43,12 +43,12 @@
         {% endif %}
         <div id="view-more">
             <h3>View more information</h3>
-            <a href="{{ url_for('dashboard.top_artists') }}">Your top artists</a>
-            <a href="{{ url_for('dashboard.top_tracks') }}">Your top tracks</a>
+            <a class="styled-link" href="{{ url_for('dashboard.top_artists') }}">Your top artists</a>
+            <a class="styled-link" href="{{ url_for('dashboard.top_tracks') }}">Your top tracks</a>
             
             <h3>Manage your account</h3>
-            <a href="{{ url_for('auth.logout')}}">Log out</a>
-            <a href="{{ url_for('dashboard.delete_account') }}">Delete your account</a>
+            <a class="styled-link" href="{{ url_for('auth.logout')}}">Log out</a>
+            <a class="styled-link" href="{{ url_for('dashboard.delete_account') }}">Delete your account</a>
         </div>
     </div>
 {% endblock %}

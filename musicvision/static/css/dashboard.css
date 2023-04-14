@@ -84,8 +84,9 @@
 }
 
 #view-more a {
-    margin: 10px 0;
     display: block;
+    width: fit-content;
+    margin: 10px auto;
 }
 
 /* For delete account page */
