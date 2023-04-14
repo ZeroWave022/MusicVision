@@ -29,7 +29,7 @@ python3 -m venv venv
 pip3 -r requirements.txt
 ```
 
-## Setting up environmental variables
+## Setting up environmental variables and config
 The app uses multiple secrets which should never be publicly available.
 That's why a `.env` file is used for storing these.
 
@@ -45,11 +45,17 @@ DB_URI=""
 # Spotify
 CLIENT_ID=""
 CLIENT_SECRET=""
-REDIRECT_URI=""
-SCOPE=""
 ```
 
 Fill out missing fields in a `.env` which you place in the main folder (where `app.py` is).
+
+For `config.json`, use the following template:
+
+```
+{
+    "scope": ""
+}
+```
 
 ## Preparing the database
 Run `setup_db.py` to create the needed database which will be used.

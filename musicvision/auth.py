@@ -1,11 +1,14 @@
 import time
+import json
 from flask import Blueprint, render_template, redirect, session, request, g
 from musicvision import spotify_app
 from musicvision.spotify import SpotifyUser
 from musicvision.db import query_db, fetch_db
-from musicvision.env import getenv
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
+
+with open("config.json") as f:
+    config = json.load(f)
 
 
 @auth_bp.before_app_request
@@ -69,7 +72,7 @@ def login():
 
     redirect_uri = request.host_url + "auth/callback"
     state = ""  # TBA
-    scope = getenv("SCOPE")
+    scope = config["scope"]
 
     auth_link = spotify_app.gen_user_auth_link(redirect_uri, scope, state)
 
