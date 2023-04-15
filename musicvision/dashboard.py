@@ -5,11 +5,14 @@ from musicvision.db import User
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
 
-@dashboard_bp.route("/")
-def index():
+@dashboard_bp.before_request
+def ensure_user_logged_in():
     if not session.get("user"):
         return redirect(url_for("auth.login"))
 
+
+@dashboard_bp.route("/")
+def index():
     access_token = session["user"]["access_token"]
     user = SpotifyUser(access_token)
     player = user.get_currently_playing()
@@ -49,9 +52,6 @@ def index():
 
 @dashboard_bp.route("/top-artists")
 def top_artists():
-    if not session.get("user"):
-        return redirect(url_for("auth.login"))
-
     filter = request.args.get("f")
     page = request.args.get("p", type=int)
 
@@ -87,9 +87,6 @@ def top_artists():
 
 @dashboard_bp.route("/top-tracks")
 def top_tracks():
-    if not session.get("user"):
-        return redirect(url_for("auth.login"))
-
     filter = request.args.get("f")
     page = request.args.get("p", type=int)
 
@@ -115,9 +112,6 @@ def top_tracks():
 
 @dashboard_bp.get("delete-account")
 def delete_account():
-    if not session.get("user"):
-        return redirect(url_for("auth.login"))
-
     user = SpotifyUser(session["user"]["access_token"])
     profile = user.get_profile()
 
@@ -128,9 +122,6 @@ def delete_account():
 
 @dashboard_bp.post("delete-account")
 def delete_account_post():
-    if not session.get("user"):
-        return redirect(url_for("auth.login"))
-
     token = session["user"]["access_token"]
 
     try:
