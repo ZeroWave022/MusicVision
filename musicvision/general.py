@@ -2,7 +2,7 @@ import time
 import logging
 from flask import Blueprint, render_template, redirect, session
 from musicvision import spotify_app
-from musicvision.db import User
+from musicvision.db import DBSession, User, select
 
 general_bp = Blueprint("general", __name__)
 
@@ -27,9 +27,11 @@ def check_token_refresh():
     if not expires_at < time.time():
         return
 
-    try:
-        current_user: User = User.get(User.access_token == user["access_token"])
-    except:
+    with DBSession() as db:
+        query = select(User).where(User.access_token == user["access_token"])
+        current_user = db.scalars(query).first()
+
+    if not current_user:
         return session.clear()
 
     refreshed_info = spotify_app.refresh_token(current_user["refresh_token"])

@@ -1,29 +1,24 @@
-import peewee
+from sqlalchemy import String, BigInteger, create_engine, select
+from sqlalchemy.orm import sessionmaker, DeclarativeBase, Mapped, mapped_column
 from musicvision.env import getenv
 from urllib.parse import urlparse
 
 DB_URI = getenv("DB_URI")
-parsed = urlparse(DB_URI)
+db = create_engine(DB_URI)
 
-db = peewee.PostgresqlDatabase(
-    "musicvision",
-    host=parsed.hostname,
-    port=parsed.port,
-    user=parsed.username,
-    password=parsed.password,
-)
+DBSession = sessionmaker(db)
 
 
-class User(peewee.Model):
-    id = peewee.TextField(primary_key=True)
-    access_token = peewee.TextField()
-    token_type = peewee.TextField()
-    scope = peewee.TextField()
-    refresh_token = peewee.TextField()
-    expires_at = peewee.BigIntegerField()
-
-    class Meta:
-        database = db
+class Base(DeclarativeBase):
+    pass
 
 
-db.connect()
+class User(Base):
+    __tablename__ = "user"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    access_token: Mapped[str] = mapped_column(String)
+    token_type: Mapped[str] = mapped_column(String)
+    scope: Mapped[str] = mapped_column(String)
+    refresh_token: Mapped[str] = mapped_column(String)
+    expires_at: Mapped[int] = mapped_column(BigInteger)
