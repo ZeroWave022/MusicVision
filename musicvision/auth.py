@@ -1,9 +1,10 @@
 import time
+from datetime import datetime
 import json
 from flask import Blueprint, render_template, redirect, session, request, g
 from musicvision import spotify_app
 from musicvision.spotify import SpotifyUser
-from musicvision.db import DBSession, User, select
+from musicvision.db import DBSession, User, UserAuth, select
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -40,18 +41,27 @@ def auth_callback():
 
     user_info["id"] = user_profile["id"]
 
-    # Update user if already in database, otherwise create a new entry
+    # Update user and their auth if already in database, otherwise create a new entry
     with DBSession() as db:
-        query = select(User).where(User.id == user_info["id"])
-        db_user = db.scalars(query).first()
+        user_query = select(User).where(User.id == user_info["id"])
+        db_user = db.scalars(user_query).first()
 
         if db_user:
-            db_user.access_token = user_info["access_token"]
-            db_user.scope = user_info["scope"]
-            db_user.refresh_token = user_info["refresh_token"]
-            db_user.expires_at = user_info["expires_at"]
+            db_user.last_logged_in = datetime.utcnow()
         else:
-            new_user = User(
+            db_user = User(id=user_info["id"])
+            db.add(db_user)
+
+        auth_query = select(UserAuth).where(UserAuth.id == db_user.id)
+        db_auth = db.scalars(auth_query).first()
+
+        if db_auth:
+            db_auth.access_token = user_info["access_token"]
+            db_auth.scope = user_info["scope"]
+            db_auth.refresh_token = user_info["refresh_token"]
+            db_auth.expires_at = user_info["expires_at"]
+        else:
+            new_auth = UserAuth(
                 id=user_info["id"],
                 access_token=user_info["access_token"],
                 token_type=user_info["token_type"],
@@ -59,12 +69,16 @@ def auth_callback():
                 refresh_token=user_info["refresh_token"],
                 expires_at=user_info["expires_at"],
             )
-            db.add(new_user)
+            db.add(new_auth)
 
         db.commit()
 
     session.clear()
-    session["user"] = user_info
+    session["user"] = {
+        "access_token": user_info["access_token"],
+        "expires_at": user_info["expires_at"],
+    }
+
     return redirect("/")
 
 

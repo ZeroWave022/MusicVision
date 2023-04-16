@@ -2,7 +2,7 @@ import time
 import logging
 from flask import Blueprint, render_template, redirect, session
 from musicvision import spotify_app
-from musicvision.db import DBSession, User, select
+from musicvision.db import DBSession, User, UserAuth, select, update
 
 general_bp = Blueprint("general", __name__)
 
@@ -19,7 +19,7 @@ def check_token_refresh():
     except:
         logging.warning(
             "User dict for %s is corrupted. Key 'expires_at' is not available. Resetting.",
-            user["id"],
+            user["access_token"],
         )
         return session.clear()
 
@@ -27,26 +27,32 @@ def check_token_refresh():
     if not expires_at < time.time():
         return
 
-    with DBSession() as db:
-        query = select(User).where(User.access_token == user["access_token"])
-        current_user = db.scalars(query).first()
+    query = select(UserAuth).where(UserAuth.access_token == user["access_token"])
 
-    if not current_user:
+    db = DBSession()
+    user_auth = db.scalars(query).first()
+
+    if not user_auth:
+        db.close()
         return session.clear()
 
-    refreshed_info = spotify_app.refresh_token(current_user["refresh_token"])
+    refreshed_info = spotify_app.refresh_token(user_auth.refresh_token)
 
-    # Add new info to current_user dict, which later will be sent to the database
-    current_user.access_token = refreshed_info["access_token"]
-    current_user.expires_at = round(time.time() + refreshed_info["expires_in"])
+    # Add new info to user_auth dict, which later will be sent to the database
+    user_auth.access_token = refreshed_info["access_token"]
+    user_auth.expires_at = round(time.time() + refreshed_info["expires_in"])
 
     if "refresh_token" in refreshed_info:
-        current_user.refresh_token = refreshed_info["refresh_token"]
-
-    current_user.save()
+        user_auth.refresh_token = refreshed_info["refresh_token"]
 
     session.clear()
-    session["user"] = current_user
+    session["user"] = {
+        "access_token": user_auth.access_token,
+        "expires_at": user_auth.expires_at,
+    }
+
+    db.commit()
+    db.close()
 
 
 @general_bp.route("/")

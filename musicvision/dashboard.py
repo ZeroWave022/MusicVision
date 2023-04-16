@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, abort, session, request
 from musicvision.spotify import SpotifyUser
-from musicvision.db import DBSession, User, select
+from musicvision.db import DBSession, User, UserAuth, select
 
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
@@ -125,13 +125,17 @@ def delete_account_post():
     token = session["user"]["access_token"]
 
     with DBSession() as db:
-        query = select(User).where(User.access_token == token)
-        db_user = db.scalars(query).first()
+        auth_query = select(UserAuth).where(UserAuth.access_token == token)
+        db_auth = db.scalars(auth_query).first()
 
-        if not db_user:
+        if not db_auth:
             session.clear()
             return redirect("/")
 
+        user_query = select(User).where(User.id == db_auth.id)
+        db_user = db.scalars(user_query).first()
+
+        # Deleting the user row is enough, as the linked UserAuth will be deleted with it (ON DELETE CASCADE)
         try:
             db.delete(db_user)
             db.commit()
