@@ -69,9 +69,18 @@ def top_artists():
     artists_raw = user.get_top("artists", filter, 10, (page - 1) * 10)
     artists = artists_raw["items"]
 
+    # Request these artists from the API to get their followers and additional info
+    artist_ids = [artist["id"] for artist in artists]
+    full_artists = user.get_artists(artist_ids)["artists"]
+
     for artist in artists:
         artist["genres"] = [i.capitalize() for i in artist["genres"]]
         artist["genres"] = ", ".join(artist["genres"][:3])
+
+        # The spotify get top items endpoint doesn't return followers correctly, so these need to be retrieved from the get artists endpoint
+        # Get this artist's full info and set their followers
+        api_artist = [item for item in full_artists if item["id"] == artist["id"]]
+        artist["followers"]["total"] = api_artist[0]["followers"]["total"]
 
     artists_sorted = sorted(
         artists_raw["items"], key=lambda i: i["popularity"], reverse=True
