@@ -132,12 +132,9 @@ def delete_account_post():
             session.clear()
             return redirect("/")
 
-        user_query = select(User).where(User.id == db_auth.id)
-        db_user = db.scalars(user_query).first()
-
-        # Deleting the user row is enough, as the linked UserAuth will be deleted with it (ON DELETE CASCADE)
+        # Deleting the user row is enough, as the linked UserAuth and other linked data will be deleted with it (ON DELETE CASCADE)
         try:
-            db.delete(db_user)
+            db.delete(db_auth.user)
             db.commit()
         except Exception as e:
             print(e)

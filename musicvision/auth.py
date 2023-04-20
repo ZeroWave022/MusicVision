@@ -59,15 +59,14 @@ def auth_callback():
             db.add(db_user)
             is_new_user = True
 
-        auth_query = select(UserAuth).where(UserAuth.id == db_user.id)
-        db_auth = db.scalars(auth_query).first()
-
         # If there's already a user auth for this user, update it, otherwise add a row
-        if db_auth:
-            db_auth.access_token = user_info["access_token"]
-            db_auth.scope = user_info["scope"]
-            db_auth.refresh_token = user_info["refresh_token"]
-            db_auth.expires_at = user_info["expires_at"]
+        auth = db_user.auth
+
+        if auth:
+            auth.access_token = user_info["access_token"]
+            auth.scope = user_info["scope"]
+            auth.refresh_token = user_info["refresh_token"]
+            auth.expires_at = user_info["expires_at"]
         else:
             new_auth = UserAuth(
                 id=user_info["id"],

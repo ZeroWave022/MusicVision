@@ -38,7 +38,15 @@ class User(Base):
     )
     last_updated: Mapped[DateTime] = mapped_column(DateTime, default=datetime.utcnow())
 
-    auth: Mapped["UserAuth"] = relationship(back_populates="user")
+    auth: Mapped["UserAuth"] = relationship(
+        back_populates="user", cascade="all, delete"
+    )
+    tracks: Mapped[list["Track"]] = relationship(
+        back_populates="user", cascade="all, delete"
+    )
+    artists: Mapped[list["Artist"]] = relationship(
+        back_populates="user", cascade="all, delete"
+    )
 
 
 class UserAuth(Base):
@@ -60,19 +68,23 @@ class Track(Base):
     __tablename__ = "track"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    user_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
+    user_id: Mapped[str] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
     track_id: Mapped[str] = mapped_column(String)
     time_frame: Mapped[str] = mapped_column(String)
     popularity: Mapped[int] = mapped_column(SmallInteger)
     added_at: Mapped[DateTime] = mapped_column(DateTime, default=datetime.utcnow())
+
+    user: Mapped["User"] = relationship(back_populates="tracks")
 
 
 class Artist(Base):
     __tablename__ = "artist"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    user_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
+    user_id: Mapped[str] = mapped_column(ForeignKey("user.id", ondelete="CASCADE"))
     artist_id: Mapped[str] = mapped_column(String)
     time_frame: Mapped[str] = mapped_column(String)
     popularity: Mapped[int] = mapped_column(SmallInteger)
     added_at: Mapped[DateTime] = mapped_column(DateTime, default=datetime.utcnow())
+
+    user: Mapped["User"] = relationship(back_populates="artists")
