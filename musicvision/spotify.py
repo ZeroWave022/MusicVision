@@ -6,6 +6,8 @@ API_LINKS = {
     "login": "https://accounts.spotify.com/authorize",
     "token": "https://accounts.spotify.com/api/token",
     "current_user": "https://api.spotify.com/v1/me",
+    "artists": "https://api.spotify.com/v1/artists",
+    "tracks": "https://api.spotify.com/v1/tracks",
     "playback_state": "https://api.spotify.com/v1/me/player",
     "currently_playing": "https://api.spotify.com/v1/me/player/currently-playing",
     "playlist": "https://api.spotify.com/v1/playlists/",
@@ -119,6 +121,11 @@ class SpotifyUser:
             "Content-Type": "application/json",
         }
 
+    def _raise_failed_request(self, req_name: str) -> None:
+        raise Exception(
+            f"Spotify {req_name} request failed with a non-200 status code or no content was received."
+        )
+
     def get_profile(self) -> dict:
         """Get this user's profile from the Spotify API.
         Docs: https://developer.spotify.com/documentation/web-api/reference/get-current-users-profile
@@ -130,9 +137,69 @@ class SpotifyUser:
         res = self.session.get(self.api_links["current_user"])
 
         if not res.ok or res.text == "":
-            raise Exception(
-                "Spotify get_user request failed with a non-200 status code or no content was received."
-            )
+            self._raise_failed_request("get_profile")
+
+        return json.loads(res.text)
+
+    def get_artist(self, id: str) -> dict:
+        """Get an artist.
+        Docs: https://developer.spotify.com/documentation/web-api/reference/get-an-artist
+
+        Returns
+        -------
+        `dict`
+        """
+        res = self.session.get(self.api_links["artists"] + f"/{id}")
+
+        if not res.ok or res.text == "":
+            self._raise_failed_request("get_artist")
+
+        return json.loads(res.text)
+
+    def get_artists(self, ids: list[str]) -> dict:
+        """Get multiple artists.
+        Docs: https://developer.spotify.com/documentation/web-api/reference/get-multiple-artists
+
+        Returns
+        -------
+        `dict`
+        """
+        ids_list = ",".join(ids)
+        res = self.session.get(self.api_links["artists"], params={"ids": ids_list})
+
+        if not res.ok or res.text == "":
+            self._raise_failed_request("get_artists")
+
+        return json.loads(res.text)
+
+    def get_track(self, id: str) -> dict:
+        """Get a track.
+        Docs: https://developer.spotify.com/documentation/web-api/reference/get-track
+
+        Returns
+        -------
+        `dict`
+        """
+        res = self.session.get(self.api_links["tracks"] + f"/{id}")
+
+        if not res.ok or res.text == "":
+            self._raise_failed_request("get_track")
+
+        return json.loads(res.text)
+
+    def get_tracks(self, ids: list[str]) -> dict:
+        """Get multiple tracks.
+        Docs: https://developer.spotify.com/documentation/web-api/reference/get-several-tracks
+
+        Returns
+        -------
+        `dict`
+        """
+        ids_list = ",".join(ids)
+        res = self.session.get(self.api_links["tracks"], params={"ids": ids_list})
+
+        if not res.ok or res.text == "":
+            self._raise_failed_request("get_tracks")
 
         return json.loads(res.text)
 
@@ -147,9 +214,7 @@ class SpotifyUser:
         res = self.session.get(self.api_links["playback_state"])
 
         if not res.ok or res.text == "":
-            raise Exception(
-                "Spotify get_playback_state request failed with a non-200 status code or no content was received."
-            )
+            self._raise_failed_request("get_playback_state")
 
         return json.loads(res.text)
 
@@ -185,9 +250,7 @@ class SpotifyUser:
         res = self.session.get(self.api_links["playlist"] + playlist_id)
 
         if not res.ok or res.text == "":
-            raise Exception(
-                "Spotify get_playlist request failed with a non-200 status code or no content was received."
-            )
+            self._raise_failed_request("get_playlist")
 
         return json.loads(res.text)
 
@@ -214,7 +277,6 @@ class SpotifyUser:
         -------
         `dict`
         """
-
         if item_type not in ["artists", "tracks"]:
             raise ValueError(
                 'The `item_type` parameter must be one of the following: "artists" or "tracks".'
@@ -230,9 +292,7 @@ class SpotifyUser:
         res = self.session.get(self.api_links["top"] + item_type, params=params)
 
         if not res.ok or res.text == "":
-            raise Exception(
-                "Spotify get_top request failed with a non-200 status code or no content was received."
-            )
+            self._raise_failed_request("get_top")
 
         return json.loads(res.text)
 
@@ -252,7 +312,6 @@ class SpotifyUser:
         `bool`
             `True` if successful, `False` if failed.
         """
-
         if toggle:
             res = self.session.put(self.api_links["start_playback"])
         else:
