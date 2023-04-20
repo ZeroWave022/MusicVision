@@ -2,6 +2,7 @@ import logging
 from flask import Flask
 from musicvision.spotify import SpotifyApp
 from musicvision.env import getenv
+from musicvision.tasks import start_tasks
 
 # Set globally used SpotifyApp client
 spotify_app = SpotifyApp(getenv("CLIENT_ID"), getenv("CLIENT_SECRET"))
@@ -29,5 +30,9 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(api_bp)
     app.register_blueprint(legal_bp)
+
+    @app.before_first_request
+    def tasks():
+        start_tasks()
 
     return app

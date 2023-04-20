@@ -1,15 +1,22 @@
 from datetime import datetime
 from sqlalchemy import (
     String,
-    BigInteger,
     SmallInteger,
+    Integer,
+    BigInteger,
     DateTime,
     ForeignKey,
     create_engine,
     select,
     update,
 )
-from sqlalchemy.orm import sessionmaker, DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import (
+    sessionmaker,
+    DeclarativeBase,
+    Mapped,
+    mapped_column,
+    relationship,
+)
 from musicvision.env import getenv
 
 DB_URI = getenv("DB_URI")
@@ -31,6 +38,8 @@ class User(Base):
     )
     last_updated: Mapped[DateTime] = mapped_column(DateTime, default=datetime.utcnow())
 
+    auth: Mapped["UserAuth"] = relationship(back_populates="user")
+
 
 class UserAuth(Base):
     __tablename__ = "userauth"
@@ -43,3 +52,27 @@ class UserAuth(Base):
     scope: Mapped[str] = mapped_column(String)
     refresh_token: Mapped[str] = mapped_column(String)
     expires_at: Mapped[int] = mapped_column(BigInteger)
+
+    user: Mapped["User"] = relationship(back_populates="auth")
+
+
+class Track(Base):
+    __tablename__ = "track"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
+    track_id: Mapped[str] = mapped_column(String)
+    time_frame: Mapped[str] = mapped_column(String)
+    popularity: Mapped[int] = mapped_column(SmallInteger)
+    added_at: Mapped[DateTime] = mapped_column(DateTime, default=datetime.utcnow())
+
+
+class Artist(Base):
+    __tablename__ = "artist"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("user.id"))
+    artist_id: Mapped[str] = mapped_column(String)
+    time_frame: Mapped[str] = mapped_column(String)
+    popularity: Mapped[int] = mapped_column(SmallInteger)
+    added_at: Mapped[DateTime] = mapped_column(DateTime, default=datetime.utcnow())

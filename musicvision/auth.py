@@ -1,10 +1,12 @@
 import time
 from datetime import datetime
 import json
+from threading import Thread
 from flask import Blueprint, render_template, redirect, session, request, g
 from musicvision import spotify_app
 from musicvision.spotify import SpotifyUser
 from musicvision.db import DBSession, User, UserAuth, select
+from musicvision.tasks import setup_new_user
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -41,20 +43,26 @@ def auth_callback():
 
     user_info["id"] = user_profile["id"]
 
+    is_new_user = False
+
     # Update user and their auth if already in database, otherwise create a new entry
     with DBSession() as db:
         user_query = select(User).where(User.id == user_info["id"])
         db_user = db.scalars(user_query).first()
 
+        # If there's already a user, update the row
+        # Otherwise add a row and set is_new_user
         if db_user:
             db_user.last_logged_in = datetime.utcnow()
         else:
             db_user = User(id=user_info["id"])
             db.add(db_user)
+            is_new_user = True
 
         auth_query = select(UserAuth).where(UserAuth.id == db_user.id)
         db_auth = db.scalars(auth_query).first()
 
+        # If there's already a user auth for this user, update it, otherwise add a row
         if db_auth:
             db_auth.access_token = user_info["access_token"]
             db_auth.scope = user_info["scope"]
@@ -73,6 +81,12 @@ def auth_callback():
 
         db.commit()
 
+    # If a new user has registered, perform a manual update of their data in a thread
+    if is_new_user:
+        user_thread = Thread(target=setup_new_user, args=(user_info["access_token"],))
+        user_thread.start()
+
+    # Clear the session of any old data and insert new
     session.clear()
     session["user"] = {
         "access_token": user_info["access_token"],
