@@ -18,12 +18,11 @@ def load_logged_in_user():
     access_token = session.get("access_token")
     with DBSession() as db:
         auth = db.scalar(select(UserAuth).where(UserAuth.access_token == access_token))
-        user = auth.user
 
-    if user:
-        g.user = user
-    else:
-        g.user = None
+        if auth:
+            g.user = auth.user
+        else:
+            g.user = None
 
 
 @auth_bp.route("/callback")
