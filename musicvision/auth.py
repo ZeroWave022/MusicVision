@@ -1,5 +1,4 @@
-import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from threading import Thread
 from flask import Blueprint, render_template, redirect, session, request, g
@@ -16,7 +15,10 @@ with open("config.json") as f:
 
 @auth_bp.before_app_request
 def load_logged_in_user():
-    user = session.get("user")
+    access_token = session.get("access_token")
+    with DBSession() as db:
+        auth = db.scalar(select(UserAuth).where(UserAuth.access_token == access_token))
+        user = auth.user
 
     if user:
         g.user = user
@@ -89,17 +91,14 @@ def auth_callback():
 
     # Clear the session of any old data and insert new
     session.clear()
-    session["user"] = {
-        "access_token": user_info["access_token"],
-        "expires_at": user_info["expires_at"],
-    }
+    session["access_token"] = user_info["access_token"]
 
     return redirect("/")
 
 
 @auth_bp.route("/login")
 def login():
-    if session.get("user"):
+    if session.get("access_token"):
         return redirect("/dashboard")
 
     redirect_uri = request.host_url + "auth/callback"

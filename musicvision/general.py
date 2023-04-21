@@ -9,28 +9,18 @@ general_bp = Blueprint("general", __name__)
 
 @general_bp.before_app_request
 def check_token_refresh():
-    user = session.get("user")
+    access_token = session.get("access_token")
 
-    if not user:
+    if not access_token:
         return
 
-    try:
-        expires_at = user["expires_at"]
-    except:
-        logging.warning(
-            "User dict for %s is corrupted. Key 'expires_at' is not available. Resetting.",
-            user["access_token"],
-        )
-        return session.clear()
+    db = DBSession()
+    query = select(UserAuth).where(UserAuth.access_token == access_token)
+    user_auth = db.scalars(query).first()
 
     # Check if token refresh is needed
     if not user_auth.expires_at < datetime.utcnow():
         return
-
-    query = select(UserAuth).where(UserAuth.access_token == user["access_token"])
-
-    db = DBSession()
-    user_auth = db.scalars(query).first()
 
     if not user_auth:
         db.close()
@@ -48,10 +38,7 @@ def check_token_refresh():
         user_auth.refresh_token = refreshed_info["refresh_token"]
 
     session.clear()
-    session["user"] = {
-        "access_token": user_auth.access_token,
-        "expires_at": user_auth.expires_at,
-    }
+    session["access_token"] = user_auth.access_token
 
     db.commit()
     db.close()

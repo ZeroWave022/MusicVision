@@ -7,13 +7,13 @@ dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
 @dashboard_bp.before_request
 def ensure_user_logged_in():
-    if not session.get("user"):
+    if not session.get("access_token"):
         return redirect(url_for("auth.login"))
 
 
 @dashboard_bp.route("/")
 def index():
-    access_token = session["user"]["access_token"]
+    access_token = session["access_token"]
     user = SpotifyUser(access_token)
     player = user.get_currently_playing()
 
@@ -63,7 +63,7 @@ def top_artists():
     if not isinstance(page, int) or page > 5 or page < 1:
         page = 1
 
-    user = SpotifyUser(session["user"]["access_token"])
+    user = SpotifyUser(session["access_token"])
 
     # Decrement page by one to get correct offset
     artists_raw = user.get_top("artists", filter, 10, (page - 1) * 10)
@@ -107,7 +107,7 @@ def top_tracks():
     if not isinstance(page, int) or page > 5 or page < 1:
         page = 1
 
-    user = SpotifyUser(session["user"]["access_token"])
+    user = SpotifyUser(session["access_token"])
 
     # Decrement page by one to get correct offset
     tracks_raw = user.get_top("tracks", filter, 10, (page - 1) * 10)
@@ -121,7 +121,7 @@ def top_tracks():
 
 @dashboard_bp.get("delete-account")
 def delete_account():
-    user = SpotifyUser(session["user"]["access_token"])
+    user = SpotifyUser(session["access_token"])
     profile = user.get_profile()
 
     return render_template(
@@ -131,7 +131,7 @@ def delete_account():
 
 @dashboard_bp.post("delete-account")
 def delete_account_post():
-    token = session["user"]["access_token"]
+    token = session["access_token"]
 
     with DBSession() as db:
         auth_query = select(UserAuth).where(UserAuth.access_token == token)
