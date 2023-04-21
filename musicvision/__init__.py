@@ -12,6 +12,7 @@ from musicvision.dashboard import dashboard_bp
 from musicvision.auth import auth_bp
 from musicvision.api import api_bp
 from musicvision.legal import legal_bp
+from musicvision.tasks import start_tasks
 
 # Set up logging when package is initialized
 logging.basicConfig(
@@ -29,5 +30,7 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(api_bp)
     app.register_blueprint(legal_bp)
+
+    start_tasks()
 
     return app
