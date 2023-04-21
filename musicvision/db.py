@@ -21,6 +21,7 @@ from musicvision.env import getenv
 DB_URI = getenv("DB_URI")
 db = create_engine(
     DB_URI,
+    pool_pre_ping=True,
     connect_args={
         "keepalives": 1,
         "keepalives_idle": 30,
