@@ -18,13 +18,13 @@ def check_token_refresh():
     query = select(UserAuth).where(UserAuth.access_token == access_token)
     user_auth = db.scalars(query).first()
 
-    # Check if token refresh is needed
-    if not user_auth.expires_at < datetime.utcnow():
-        return
-
     if not user_auth:
         db.close()
         return session.clear()
+
+    # Check if token refresh is needed
+    if not user_auth.expires_at < datetime.utcnow():
+        return
 
     refreshed_info = spotify_app.refresh_token(user_auth.refresh_token)
 
