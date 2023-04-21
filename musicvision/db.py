@@ -19,7 +19,15 @@ from sqlalchemy.orm import (
 from musicvision.env import getenv
 
 DB_URI = getenv("DB_URI")
-db = create_engine(DB_URI)
+db = create_engine(
+    DB_URI,
+    connect_args={
+        "keepalives": 1,
+        "keepalives_idle": 30,
+        "keepalives_interval": 15,
+        "keepalives_count": 5,
+    },
+)
 
 DBSession = sessionmaker(db)
 
