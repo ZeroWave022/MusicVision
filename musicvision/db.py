@@ -3,7 +3,6 @@ from sqlalchemy import (
     String,
     SmallInteger,
     Integer,
-    BigInteger,
     DateTime,
     ForeignKey,
     create_engine,
@@ -59,7 +58,7 @@ class UserAuth(Base):
     token_type: Mapped[str] = mapped_column(String)
     scope: Mapped[str] = mapped_column(String)
     refresh_token: Mapped[str] = mapped_column(String)
-    expires_at: Mapped[int] = mapped_column(BigInteger)
+    expires_at: Mapped[int] = mapped_column(DateTime)
 
     user: Mapped["User"] = relationship(back_populates="auth")
 

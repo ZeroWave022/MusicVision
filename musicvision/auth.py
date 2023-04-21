@@ -35,7 +35,9 @@ def auth_callback():
     # Get user info and set when token expires
     user_info = spotify_app.get_user_token(code, request.base_url)
 
-    user_info["expires_at"] = round(time.time() + user_info["expires_in"])
+    user_info["expires_at"] = datetime.utcnow() + timedelta(
+        seconds=user_info["expires_in"]
+    )
 
     # Get user profile and add their id to their info
     user = SpotifyUser(user_info["access_token"])

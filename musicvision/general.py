@@ -1,4 +1,4 @@
-import time
+from datetime import datetime, timedelta
 import logging
 from flask import Blueprint, render_template, redirect, session
 from musicvision import spotify_app
@@ -24,7 +24,7 @@ def check_token_refresh():
         return session.clear()
 
     # Check if token refresh is needed
-    if not expires_at < time.time():
+    if not user_auth.expires_at < datetime.utcnow():
         return
 
     query = select(UserAuth).where(UserAuth.access_token == user["access_token"])
@@ -40,7 +40,9 @@ def check_token_refresh():
 
     # Add new info to user_auth dict, which later will be sent to the database
     user_auth.access_token = refreshed_info["access_token"]
-    user_auth.expires_at = round(time.time() + refreshed_info["expires_in"])
+    user_auth.expires_at = datetime.utcnow() + timedelta(
+        seconds=refreshed_info["expires_in"]
+    )
 
     if "refresh_token" in refreshed_info:
         user_auth.refresh_token = refreshed_info["refresh_token"]
