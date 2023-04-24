@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import logging
 from flask import Blueprint, render_template, redirect, session
 from musicvision import spotify_app
-from musicvision.db import DBSession, User, UserAuth, select, update
+from musicvision.db import DBSession, UserAuth, select
 
 general_bp = Blueprint("general", __name__)
 
@@ -27,6 +27,12 @@ def check_token_refresh():
         return
 
     refreshed_info = spotify_app.refresh_token(user_auth.refresh_token)
+
+    if "access_token" not in refreshed_info:
+        logging.warn(
+            f"No access token in refreshed info from the Spotify API for {user_auth.id}. Forcing client session reset."
+        )
+        return session.clear()
 
     # Add new info to user_auth dict, which later will be sent to the database
     user_auth.access_token = refreshed_info["access_token"]
