@@ -89,6 +89,12 @@
     margin: 10px auto;
 }
 
+.chart {
+    width: 75vw;
+    max-width: 1200px;
+    margin: 50px auto;
+}
+
 /* For delete account page */
 
 form button {
@@ -121,9 +127,6 @@ form button:focus img,
 form button:active img {
     opacity: 1;
     transition: 0.2s ease-in-out;
-}
-
-form button span {
 }
 
 form button img {

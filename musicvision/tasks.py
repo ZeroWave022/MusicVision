@@ -2,39 +2,45 @@ from datetime import datetime, timedelta
 import threading
 import time
 import logging
-from sqlalchemy.orm import Session
+from sqlalchemy import update
+from sqlalchemy.orm import joinedload
 from musicvision import spotify_app
 from musicvision.db import DBSession, User, UserAuth, Artist, Track, select
 from musicvision.spotify import SpotifyUser
 
 
-def _update_access_token(user: User) -> None:
+def _update_access_token(user: str) -> None:
     """Add new access token for this user's auth.
-    It is expected that the `session` is open during the execution of this procedure.
     Commiting and closing the session are tasks which must be handled outside this procedure.
 
     For interal use only (within `musicvision.tasks`).
     """
-    refreshed_info = spotify_app.refresh_token(user.auth.refresh_token)
+    session = DBSession()
+    auth = session.scalar(select(UserAuth).where(UserAuth.id == user))
+    refreshed_info = spotify_app.refresh_token(auth.refresh_token)
 
-    # Add new info to user_auth dict, which later will be sent to the database
-    user.auth.access_token = refreshed_info["access_token"]
-    user.auth.expires_at = datetime.utcnow() + timedelta(
+    # Add new info to UserAuth
+    auth.access_token = refreshed_info["access_token"]
+    auth.expires_at = datetime.utcnow() + timedelta(
         seconds=refreshed_info["expires_in"]
     )
 
     if "refresh_token" in refreshed_info:
-        user.auth.refresh_token = refreshed_info["refresh_token"]
+        auth.refresh_token = refreshed_info["refresh_token"]
+
+    session.commit()
+    session.close()
 
 
-def _add_tracks(session: Session, user: User, time_frames: list[str] = None) -> None:
-    """Add new values for top tracks for this user.
-    It is expected that the `session` is open during the execution of this procedure.
-    Commiting and closing the session are tasks which must be handled outside this procedure.
+def _add_tracks(user_id: str, time_frames: list[str] = None) -> None:
+    """Add new values for top tracks attached to this user.
+    Commiting the changes is handled within this procedure.
 
     For interal use only (within `musicvision.tasks`).
     """
-    spotify = SpotifyUser(user.auth.access_token)
+    with DBSession() as db:
+        user = db.scalar(select(User).where(User.id == user_id))
+        spotify = SpotifyUser(user.auth.access_token)
 
     # Use the provided time frames if provided, else use all available
     all_time_frames = (
@@ -49,24 +55,27 @@ def _add_tracks(session: Session, user: User, time_frames: list[str] = None) -> 
 
         for track in api_tracks["items"]:
             db_track = Track(
-                user_id=user.id,
+                user_id=user_id,
                 track_id=track["id"],
                 time_frame=time_frame,
                 popularity=track["popularity"],
             )
             new_tracks.append(db_track)
 
-        session.add_all(new_tracks)
+        with DBSession() as db:
+            db.add_all(new_tracks)
+            db.commit()
 
 
-def _add_artists(session: Session, user: User, time_frames: list[str] = None) -> None:
-    """Add new values for top artists for this user.
-    It is expected that the `session` is open during the execution of this procedure.
-    Commiting and closing the session are tasks which must be handled outside this procedure.
+def _add_artists(user_id: str, time_frames: list[str] = None) -> None:
+    """Add new values for top artists attached to this user.
+    Commiting the changes is handled within this procedure.
 
     For interal use only (within `musicvision.tasks`).
     """
-    spotify = SpotifyUser(user.auth.access_token)
+    with DBSession() as db:
+        user = db.scalar(select(User).where(User.id == user_id))
+        spotify = SpotifyUser(user.auth.access_token)
 
     # Use the provided time frames if provided, else use all available
     all_time_frames = (
@@ -81,14 +90,16 @@ def _add_artists(session: Session, user: User, time_frames: list[str] = None) ->
 
         for artist in api_artists["items"]:
             db_artist = Artist(
-                user_id=user.id,
+                user_id=user_id,
                 artist_id=artist["id"],
                 time_frame=time_frame,
                 popularity=artist["popularity"],
             )
             new_artists.append(db_artist)
 
-        session.add_all(new_artists)
+        with DBSession() as db:
+            db.add_all(new_artists)
+            db.commit()
 
 
 def setup_new_user(access_token: str) -> None:
@@ -104,8 +115,8 @@ def setup_new_user(access_token: str) -> None:
             "ABORTING setup_new_user: Asked to setup new user which wasn't found in database"
         )
 
-    _add_tracks(session, db_auth.user)
-    _add_artists(session, db_auth.user)
+    _add_tracks(db_auth.id)
+    _add_artists(db_auth.id)
 
     session.commit()
     session.close()
@@ -113,29 +124,39 @@ def setup_new_user(access_token: str) -> None:
 
 def _check_user_data() -> None:
     while True:
-        session = DBSession()
-        all_users = session.scalars(select(User)).all()
+        try:
+            with DBSession() as db:
+                # Load User.auth too, as we'll need it later
+                query = select(User).options(joinedload(User.auth))
+                all_users = db.scalars(query).all()
 
-        for user in all_users:
-            # Next update is at the last update + 6 hours
+            updated_info = []
             now = datetime.utcnow()
-            next_update_at = user.last_updated + timedelta(hours=6)
 
-            if now < next_update_at:
-                continue
+            for user in all_users:
+                # Next update is at the last update + 6 hours
+                next_update_at = user.last_updated + timedelta(hours=6)
 
-            if user.auth.expires_at < now:
-                _update_access_token(user)
+                if now < next_update_at:
+                    continue
 
-            _add_tracks(session, user)
-            _add_artists(session, user)
+                if user.auth.expires_at < now:
+                    _update_access_token(user.id)
 
-            user.last_updated = now
+                _add_tracks(user.id)
+                _add_artists(user.id)
 
-        session.commit()
-        session.close()
+                updated_info.append({"id": user.id, "last_updated": now})
 
-        time.sleep(600)  # Check every 10 minutes
+            with DBSession() as db:
+                db.execute(update(User), updated_info)
+                db.commit()
+
+            time.sleep(600)  # Check every 10 minutes
+        except Exception as e:
+            print("Exception raised in _check_user_data")
+            print(e)
+            time.sleep(60)  # If the loop encouters an exception, retry after a minute
 
 
 def start_tasks():
