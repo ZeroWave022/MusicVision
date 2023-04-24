@@ -12,6 +12,7 @@ main {
     flex: 1;
 }
 
+/* For general use for links with hover animation */
 .styled-link {
     position: relative;
     color: hsl(212, 100%, 40%);
@@ -38,6 +39,7 @@ main {
     transform: scaleX(1);
 }
 
+/* Navigation bar */
 nav {
     display: flex;
     justify-content: space-between;
@@ -71,6 +73,7 @@ nav a {
     text-shadow: gray 2px 2px 5px;
 }
 
+/* Navigation bar logo */
 #logo {
     display: flex;
     padding: 0;
@@ -91,6 +94,7 @@ nav a {
     text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.25);
 }
 
+/* Navigation bar login/dashboard button */
 #interaction-link {
     font-size: 18px;
     padding: 10px;
@@ -145,4 +149,42 @@ footer .block-link {
     display: block;
     margin: 1rem auto;
     width: fit-content;
+}
+
+
+/* General choice buttons with animations and optional logos */
+.choice-links {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 1rem 0;
+}
+
+.choice-links a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+    border-radius: 32px;
+    background-color: rgb(92, 93, 103);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: 0.2s ease-in-out;
+}
+
+.choice-links a:hover {
+    background-color: rgb(48, 48, 54);
+    transition: 0.2s ease-in-out;
+}
+
+.choice-links a.active {
+    background-color: rgb(0, 175, 80);
+}
+
+.choice-links .icon {
+    width: 16px;
+    height: 32px;
 }
