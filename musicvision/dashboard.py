@@ -119,6 +119,34 @@ def top_tracks():
     )
 
 
+@dashboard_bp.get("artist/<string:id>")
+def artist(id):
+    spotify = SpotifyUser(session["access_token"])
+
+    try:
+        artist = spotify.get_artist(id)
+    except:
+        abort(400)
+
+    return render_template("dashboard/artist.html", artist=artist)
+
+
+@dashboard_bp.get("track/<string:id>")
+def track(id):
+    spotify = SpotifyUser(session["access_token"])
+
+    try:
+        track = spotify.get_track(id)
+    except:
+        abort(400)
+
+    artists = [artist["name"] for artist in track["artists"]]
+
+    return render_template(
+        "dashboard/track.html", track=track, formatted_artists=", ".join(artists)
+    )
+
+
 @dashboard_bp.get("delete-account")
 def delete_account():
     user = SpotifyUser(session["access_token"])

@@ -15,6 +15,7 @@
         <a class="{{ 'active' if filter == 'medium_term' }}" href="?f=medium_term&p=1">Last 6 months</a>
         <a class="{{ 'active' if filter == 'short_term' }}" href="?f=short_term&p=1">Last 4 weeks</a>
     </div>
+    <h3>Tip: Discover more about an artist by clicking/tapping their name!</h3>
     <div class="table-container">
         <table>
             <thead>
@@ -33,7 +34,7 @@
                     <td>
                         <div class="item-td">
                             <img src="{{ artist['images'][0]['url'] }}" alt="Artist profile picture">
-                            <a class="styled-link" href="{{ artist['external_urls']['spotify'] }}">{{ artist["name"] }}</a>
+                            <a class="styled-link" href="./artist/{{ artist['id'] }}">{{ artist["name"] }}</a>
                         </div>
                     </td>
                     <td>{{ artist["genres"] if artist["genres"] else "None listed" }}</td>

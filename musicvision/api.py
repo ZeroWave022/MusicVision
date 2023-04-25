@@ -1,15 +1,18 @@
 from flask import Blueprint, abort, session, request
 from musicvision.spotify import SpotifyUser
-from musicvision.db import DBSession, UserAuth, select, Artist, Track
+from musicvision.db import DBSession, User, UserAuth, Artist, Track, select
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 
-@api_bp.post("/toggle-player")
-def toggle_player():
+@api_bp.before_request
+def require_token():
     if not session.get("access_token"):
         return abort(401)
 
+
+@api_bp.post("/toggle-player")
+def toggle_player():
     user = SpotifyUser(session["access_token"])
 
     player = user.get_currently_playing()
@@ -27,11 +30,142 @@ def toggle_player():
     }
 
 
-@api_bp.get("/top/tracks")
-def top_tracks():
-    if not session.get("access_token"):
+@api_bp.get("/artist/<string:id>")
+def get_one_artist(id):
+    token = session["access_token"]
+    options = request.args
+
+    with DBSession() as db:
+        user = db.scalar(select(UserAuth).where(UserAuth.access_token == token))
+
+    if not user:
+        session.clear()
         return abort(401)
 
+    spotify = SpotifyUser(user.access_token)
+
+    try:
+        api_artist_data = spotify.get_artist(id)
+    except:
+        return abort(400)
+
+    # Set up an artist_info dictionary which will be returned from this endpoint
+    artist_info = {
+        "id": id,
+        "name": api_artist_data["name"],
+        "url": api_artist_data["external_urls"]["spotify"],
+        "image": api_artist_data["images"][0]["url"],
+    }
+
+    if "time_frame" not in options:
+        return artist_info
+
+    time_frame = options["time_frame"]
+
+    with DBSession() as db:
+        query = select(Artist).where(
+            Artist.artist_id == id,
+            Artist.user_id == user.id,
+            Artist.time_frame == time_frame,
+        )
+        artist_data = db.scalars(query).all()
+
+    # If there's no DB data to add, send general artist info only
+    if len(artist_data) == 0:
+        return artist_info
+
+    # Go through data and assign popularities and timestamps
+    popularities = []
+    timestamps = []
+
+    for data in artist_data:
+        popularities.append(data.popularity)
+        formatted_time = data.added_at.strftime("%d %B %Y, %H:%M")
+        timestamps.append(formatted_time)
+
+    artist_info.update(
+        {
+            "chart_data": {
+                "timestamps": timestamps,
+                "popularities": popularities,
+                "time_frame": time_frame,
+            }
+        }
+    )
+
+    return artist_info
+
+
+@api_bp.get("/track/<string:id>")
+def get_one_track(id):
+    token = session["access_token"]
+    options = request.args
+
+    with DBSession() as db:
+        user = db.scalar(select(UserAuth).where(UserAuth.access_token == token))
+
+    if not user:
+        session.clear()
+        return abort(401)
+
+    spotify = SpotifyUser(user.access_token)
+
+    try:
+        api_track_data = spotify.get_track(id)
+    except:
+        return abort(400)
+
+    # Set up a track_info dictionary which will be returned from this endpoint
+    track_info = {
+        "id": id,
+        "artists": [artist["name"] for artist in api_track_data["artists"]],
+        "name": api_track_data["name"],
+        "url": api_track_data["external_urls"]["spotify"],
+        "image": api_track_data["album"]["images"][0]["url"],
+    }
+
+    if "time_frame" not in options:
+        return track_info
+
+    time_frame = options["time_frame"]
+
+    # Get track data for this time_frame
+    with DBSession() as db:
+        query = select(Track).where(
+            Track.track_id == id,
+            Track.user_id == user.id,
+            Track.time_frame == time_frame,
+        )
+        track_data = db.scalars(query).all()
+
+    # If there's no DB data to add, send general track info only
+    if len(track_data) == 0:
+        return track_info
+
+    # Go through data and assign popularities and timestamps
+    popularities = []
+    timestamps = []
+
+    for data in track_data:
+        popularities.append(data.popularity)
+        formatted_time = data.added_at.strftime("%d %B %Y, %H:%M")
+        timestamps.append(formatted_time)
+
+    track_info.update(
+        {
+            "chart_data": {
+                "timestamps": timestamps,
+                "popularities": popularities,
+                "time_frame": time_frame,
+            }
+        }
+    )
+
+    return track_info
+
+
+@api_bp.get("/top/tracks")
+def top_tracks():
     token = session["access_token"]
     options = request.args
 
@@ -100,9 +234,6 @@ def top_tracks():
 
 @api_bp.get("/top/artists")
 def top_artists():
-    if not session.get("access_token"):
-        return abort(401)
-
     token = session["access_token"]
     options = request.args
 
