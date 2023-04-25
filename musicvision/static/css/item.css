@@ -1,0 +1,19 @@
+/* CSS for /dashboard/artist and /dashboard/track */
+.item-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 90vw;
+    margin: 25px auto;
+    gap: 50px;
+}
+
+.item-info img {
+    width: 360px;
+    height: 360px;
+}
+
+.artist-img {
+    border-radius: 50%;
+    object-fit: cover;
+}

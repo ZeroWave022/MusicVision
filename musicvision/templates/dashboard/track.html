@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block additional_head_info %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css') }}">
+{% endblock %}
+
+{% block title %}
+    {{ track["name"] }}
+{% endblock %}
+
+{% block main %}
+    <a class="styled-link" href="../">Back to dashboard</a>
+    <div class="item-info">
+        <img src="{{ track['album']['images'][0]['url'] }}" alt="Album cover">
+        <div>
+            <h2>{{ track["name"] }}</h2>
+            <p>By {{ formatted_artists }}</p>
+            <p>Popularity in your profile: {{ track["popularity"] }}/100</p>
+            
+            {# Display an appropriate message regarding popularity #}
+            {% if track["popularity"] < 25 %}
+                <p>{{ track["name"] }} is not too important in your music library.</p>
+            {% elif track["popularity"] < 50 %}
+                <p>{{ track["name"] }} is sometimes in your music library.</p>
+            {% elif track["popularity"] < 75 %}
+                <p>{{ track["name"] }} is quite important in your music library.</p>
+            {% else %}
+                <p>You seem to listen to {{ track["name"] }} very often!</p>
+            {% endif %}
+        </div>
+    </div>
+    <h2>Popularity history</h2>
+    <div class="chart">
+        <h3 style="display: none;" id="info-text">No data found. Try selecting another time frame.</h3>
+        <canvas id="track-chart"></canvas>
+    </div>
+    <h3>Time frames</h3>
+    <p>Select a time frame for the chart - data could be different when newer or older data is used</p>
+    <div class="choice-links">
+        <a onclick="updateTrackChart('long_term')">All time</a>
+        <a onclick="updateTrackChart('medium_term')">Last 6 months</a>
+        <a onclick="updateTrackChart('short_term')">Last 4 weeks</a>
+    </div>
+{% endblock %}
+
+{% block additional_body %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script src="{{ url_for('static', filename='js/trackChart.js') }}"></script>
+{% endblock %}

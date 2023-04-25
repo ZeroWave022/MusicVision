@@ -16,6 +16,7 @@
         <a class="{{ 'active' if filter == 'medium_term' }}" href="?f=medium_term&p=1">Last 6 months</a>
         <a class="{{ 'active' if filter == 'short_term' }}" href="?f=short_term&p=1">Last 4 weeks</a>
     </div>
+    <h3>Tip: Discover more about a track by clicking/tapping its name!</h3>
     <div class="table-container">
         <table>
             <thead>
@@ -35,7 +36,7 @@
                         <div class="item-td">
                             <img src="{{ track['album']['images'][0]['url'] }}" alt="Album cover">
                             <div class="track-info">
-                                <a class="styled-link" href="{{ track['external_urls']['spotify']}}">{{ track["name"] }}</a>
+                                <a class="styled-link" href="./track/{{ track['id'] }}">{{ track["name"] }}</a>
                                 {% if track["album"]["album_type"] in ["ALBUM", "COMPILATION"] %}
                                     <p>
                                         Album: <a class="styled-link" href="{{ track['album']['external_urls']['spotify'] }}">{{ track['album']['name'] }}</a>

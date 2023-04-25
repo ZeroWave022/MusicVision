@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block additional_head_info %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css') }}">
+{% endblock %}
+
+{% block title %}
+    {{ artist["name"] }}
+{% endblock %}
+
+{% block main %}
+    <a class="styled-link" href="../">Back to dashboard</a>
+    <div class="item-info">
+        <img class="artist-img" src="{{ artist['images'][0]['url'] }}" alt="Artist profile picture">
+        <div>
+            <h2>{{ artist["name"] }}</h2>
+            <p>Followers: {{ artist["followers"]["total"] }}</p>
+            <p>Popularity in your profile: {{ artist["popularity"] }}/100</p>
+            
+            {# Display an appropriate message regarding popularity #}
+            {% if artist["popularity"] < 25 %}
+                <p>{{ artist["name"] }} is not too important in your music library.</p>
+            {% elif artist["popularity"] < 50 %}
+                <p>{{ artist["name"] }} is sometimes in your music library.</p>
+            {% elif artist["popularity"] < 75 %}
+                <p>{{ artist["name"] }} is quite important in your music library.</p>
+            {% else %}
+                <p>You seem to listen to {{ artist["name"] }} very often!</p>
+            {% endif %}
+        </div>
+    </div>
+    <h2>Popularity history</h2>
+    <div class="chart">
+        <h3 style="display: none;" id="info-text">No data found. Try selecting another time frame.</h3>
+        <canvas id="artist-chart"></canvas>
+    </div>
+    <h3>Time frames</h3>
+    <p>Select a time frame for the chart - data could be different when newer or older data is used</p>
+    <div class="choice-links">
+        <a onclick="updateArtistChart('long_term')">All time</a>
+        <a onclick="updateArtistChart('medium_term')">Last 6 months</a>
+        <a onclick="updateArtistChart('short_term')">Last 4 weeks</a>
+    </div>
+{% endblock %}
+
+{% block additional_body %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+    <script src="{{ url_for('static', filename='js/artistChart.js') }}"></script>
+{% endblock %}
