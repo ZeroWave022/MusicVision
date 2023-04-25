@@ -125,13 +125,24 @@ def setup_new_user(access_token: str) -> None:
 def _check_user_data() -> None:
     while True:
         try:
+            # Load User.auth too, as we'll need it later
+            query = select(User).options(joinedload(User.auth))
+
             with DBSession() as db:
-                # Load User.auth too, as we'll need it later
-                query = select(User).options(joinedload(User.auth))
+                all_users = db.scalars(query).all()
+
+            now = datetime.utcnow()
+
+            # Update access tokens if needed
+            for user in all_users:
+                if user.auth.expires_at < now:
+                    _update_access_token(user.id)
+
+            # Update users, as they may have new info
+            with DBSession() as db:
                 all_users = db.scalars(query).all()
 
             updated_info = []
-            now = datetime.utcnow()
 
             for user in all_users:
                 # Next update is at the last update + 6 hours
@@ -139,9 +150,6 @@ def _check_user_data() -> None:
 
                 if now < next_update_at:
                     continue
-
-                if user.auth.expires_at < now:
-                    _update_access_token(user.id)
 
                 _add_tracks(user.id)
                 _add_artists(user.id)
