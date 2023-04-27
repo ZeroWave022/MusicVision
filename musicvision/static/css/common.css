@@ -1,0 +1,45 @@
+.green {
+    color: rgb(0, 175, 80);
+}
+
+.main-content {
+    width: 75vw;
+    margin: auto;
+}
+
+/* General choice buttons with animations and optional logos */
+.choice-links {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 1rem 0;
+}
+
+.choice-links a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+    border-radius: 32px;
+    background-color: rgb(92, 93, 103);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: 0.2s ease-in-out;
+}
+
+.choice-links a:hover {
+    background-color: rgb(48, 48, 54);
+    transition: 0.2s ease-in-out;
+}
+
+.choice-links a.active {
+    background-color: rgb(0, 175, 80);
+}
+
+.choice-links .icon {
+    width: 16px;
+    height: 32px;
+}

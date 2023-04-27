@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 
+{% block additional_head_info %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+{% endblock %}
+
 {% block title %}
     Home
 {% endblock %}
@@ -9,7 +13,7 @@
         About <span id="logo"><span>M</span><span>usic</span><span>V</span><span>ision</span></span>
     </h1>
 
-    <div style="width: 75vw; margin: auto;">
+    <div class="main-content" style="max-width: 1000px;">
         <p>
             MusicVision is a project encouraging taking a serious look at one's data accumulated over the years, as this can be helpful to understand and explore one's music taste and possibly find new favorite tracks or artists.
             This project's vision is to make it easy to take a look at one's profile and show the information that's not as easily available in your usual profile.
