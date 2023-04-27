@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Features
+{% endblock %}
+
+{% block main %}
+    <h1>All your <span class="green">Spotify</span> information in one place</h1>
+    
+    <div class="info-row">
+        <div class="info-box">
+            <h2>Discover your top artists</h2>
+            <p>
+                MusicVision shows you what your top artists are based on your Spotify profile.
+                Ever wondered who you're listening to the most? Or who appears frequently in your library?
+            </p>
+            <p>It's time to find out!</p>
+        </div>
+        <div class="described-image">
+            <img src="{{ url_for('static', filename='images/concert-crowd.jpg') }}" alt="A concert">
+            <p>By Okan Caliskan on Pixabay</p>
+        </div>
+    </div>
+
+    <div class="info-row">
+        <div class="described-image">
+            <img src="{{ url_for('static', filename='images/vinyl-player.jpg') }}" alt="A vinyl player">
+            <p>By Pexels on Pixabay</p>
+        </div>
+        <div class="info-box">
+            <h2>Discover your top tracks</h2>
+            <p>
+                You'll also get to know which tracks seem to be the most popular in your profile.
+                MusicVision gives you the possiblity to see your top track from the last four weeks, six months, or all time!
+            </p>
+            <p>Maybe it's time to rediscover an awesome track from a while back?</p>
+        </div>
+    </div>
+
+    <div class="info-row">
+        <div class="info-box">
+            <h2>Take a closer look at individual track or artist</h2>
+            <p>
+                By selecting a track or an artist in your MusicVision dashboard, you can take a closer look at your relation with the track or artist.
+                Explore your popularity history, showing how your listening has changed.
+                Perhaps your music taste has changed, or maybe you're back to listening to your all-time favorites?
+            </p>
+            <p>MusicVision let's you delve into the data about your Spotify profile - to satisfy your curiosity and complement your music journey.</p>
+        </div>
+        <div class="described-image">
+            <img src="{{ url_for('static', filename='images/radio-cassette-player.png') }}" alt="A radio cassette player">
+            <p>By vectronom on Pixabay</p>
+        </div>
+    </div>
+{% endblock %}

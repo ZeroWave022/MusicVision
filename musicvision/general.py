@@ -52,12 +52,12 @@ def check_token_refresh():
 
 @general_bp.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("general/index.html")
 
 
 @general_bp.route("/features")
 def features():
-    return redirect("/")
+    return render_template("general/features.html")
 
 
 @general_bp.route("/about")

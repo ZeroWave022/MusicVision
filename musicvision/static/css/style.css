@@ -107,6 +107,7 @@ nav a {
 .info-row {
     display: flex;
     justify-content: center;
+    padding: 15px;
     margin: auto;
     width: 90vw;
     gap: 50px;
@@ -116,7 +117,18 @@ nav a {
     margin: 0.25em 0;
 }
 
+.info-row:nth-child(even) {
+    background-color: rgba(249, 245, 235, 0.4);
+}
+
+.info-box {
+    display: flex;
+    flex-direction: column;
+    max-width: 50%;
+}
+
 .described-image img {
+    border-radius: 15px;
     max-height: 450px;
 }
 
