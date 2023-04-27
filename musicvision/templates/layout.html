@@ -55,6 +55,9 @@
         </div>
         <div>
             <h1>Shortcuts</h1>
+            <a class="styled-link block-link" href="{{ url_for('dashboard.index') }}">
+                Your dashboard
+            </a>
             <a class="styled-link block-link" href="{{ url_for('dashboard.top_artists') }}">
                 Your top artists
             </a>
@@ -63,16 +66,10 @@
             </a>
         </div>
         <div>
-            <h2>About</h2>
-            <p>
-                MusicVision is open-source and available on <a class="styled-link" href="https://github.com/ZeroWave022/MusicVision">GitHub</a>.
-                If you find any bugs, feel free to open an <a class="styled-link" href="https://github.com/ZeroWave022/MusicVision/issues">issue</a> there.
-                Contributions are greatly appreciated.
-            </p>
+            <h2>About MusicVision</h2>
+            <a class="styled-link block-link" href="{{ url_for('general.about') }}">About</a>
             <a class="styled-link block-link" href="{{ url_for('legal.terms') }}">Terms of Service</a>
             <a class="styled-link block-link" href="{{ url_for('legal.privacy') }}">Privacy Policy</a>
-            <h2>Disclaimer</h2>
-            <p>This website is in no way associated with Spotify, nor is it endorsed by Spotify.</p>
         </div>
     </footer>
     
