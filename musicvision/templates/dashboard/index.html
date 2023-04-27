@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block additional_head_info %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/main.css') }}">
 {% endblock %}
 
@@ -58,20 +59,20 @@
     <div class="chart">
         <h1>Your top tracks</h1>
         <canvas id="tracks-chart"></canvas>
-        <div class="choice-links">
-            <a onclick="updateChart('tracks', 'long_term', 5)" >All time</a>
-            <a onclick="updateChart('tracks', 'medium_term', 5)">Last 6 months</a>
-            <a onclick="updateChart('tracks', 'short_term', 5)">Last 4 weeks</a>
+        <div class="choice-buttons">
+            <button onclick="updateChart('tracks', 'long_term', 5)" >All time</button>
+            <button onclick="updateChart('tracks', 'medium_term', 5)">Last 6 months</button>
+            <button onclick="updateChart('tracks', 'short_term', 5)">Last 4 weeks</button>
         </div>
     </div>
 
     <div class="chart">
         <h1>Your top artists</h1>
         <canvas id="artists-chart"></canvas>
-        <div class="choice-links">
-            <a onclick="updateChart('artists', 'long_term', 5)" >All time</a>
-            <a onclick="updateChart('artists', 'medium_term', 5)">Last 6 months</a>
-            <a onclick="updateChart('artists', 'short_term', 5)">Last 4 weeks</a>
+        <div class="choice-buttons">
+            <button onclick="updateChart('artists', 'long_term', 5)" >All time</button>
+            <button onclick="updateChart('artists', 'medium_term', 5)">Last 6 months</button>
+            <button onclick="updateChart('artists', 'short_term', 5)">Last 4 weeks</button>
         </div>
     </div>
 {% endblock %}

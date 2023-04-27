@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block additional_head_info %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/item.css') }}">
 {% endblock %}
@@ -41,10 +42,10 @@
     {# Choice buttons for the chart above #}
     <h3>Time frames</h3>
     <p>Select a time frame for the chart - data could be different when newer or older data is used</p>
-    <div class="choice-links">
-        <a onclick="updateTrackChart('long_term')">All time</a>
-        <a onclick="updateTrackChart('medium_term')">Last 6 months</a>
-        <a onclick="updateTrackChart('short_term')">Last 4 weeks</a>
+    <div class="choice-buttons">
+        <button onclick="updateTrackChart('long_term')">All time</button>
+        <button onclick="updateTrackChart('medium_term')">Last 6 months</button>
+        <button onclick="updateTrackChart('short_term')">Last 4 weeks</button>
     </div>
 {% endblock %}
 

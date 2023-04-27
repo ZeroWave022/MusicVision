@@ -11,7 +11,7 @@
 
 {% block main %}
     <h1>Top Artists</h1>
-    <div class="choice-links">
+    <div class="choice-buttons">
         <a class="{{ 'active' if filter == 'long_term' }}" href="?f=long_term&p=1">All time</a>
         <a class="{{ 'active' if filter == 'medium_term' }}" href="?f=medium_term&p=1">Last 6 months</a>
         <a class="{{ 'active' if filter == 'short_term' }}" href="?f=short_term&p=1">Last 4 weeks</a>
@@ -49,7 +49,7 @@
     </div>
 
     {# Choice buttons for changing page #}
-    <div class="choice-links">
+    <div class="choice-buttons">
         {% if page - 1 > 0 %}
         <a href="?f={{ filter }}&p={{ page - 1 }}">
             <img class="icon" src="{{ url_for('static', filename='icons/angle-left-solid.svg') }}" alt="Angle icon pointing left">
