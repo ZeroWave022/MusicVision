@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block additional_head_info %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/main.css') }}">
 {% endblock %}
 
@@ -19,7 +20,7 @@
         </p>
         
         <form action="" method="post">
-            <button>
+            <button class="action-button">
                 <span>Delete my account</span>
                 <img src="{{ url_for('static', filename='icons/angle-right-solid.svg') }}" alt="Angle icon pointing right">
             </button>
