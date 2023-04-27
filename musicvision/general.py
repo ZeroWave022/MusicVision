@@ -62,4 +62,4 @@ def features():
 
 @general_bp.route("/about")
 def about():
-    return redirect("/")
+    return render_template("general/about.html")

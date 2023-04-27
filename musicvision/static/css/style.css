@@ -75,7 +75,7 @@ nav a {
 
 /* Navigation bar logo */
 #logo {
-    display: flex;
+    display: inline-flex;
     padding: 0;
 }
 
