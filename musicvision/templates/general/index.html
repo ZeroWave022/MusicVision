@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 
+{% block additional_head_info %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+{% endblock %}
+
 {% block title %}
     Home
 {% endblock %}
@@ -20,4 +24,6 @@
             <p>Image retrieved from Pixabay</p>
         </div>
     </div>
+    <h1>Check out all features</h1>
+    <p>Look at our <a class="styled-link" href="{{ url_for('general.features') }}">features</a> page to read about everything MusicVision has to offer</p>
 {% endblock %}

@@ -75,7 +75,7 @@ nav a {
 
 /* Navigation bar logo */
 #logo {
-    display: flex;
+    display: inline-flex;
     padding: 0;
 }
 
@@ -107,6 +107,7 @@ nav a {
 .info-row {
     display: flex;
     justify-content: center;
+    padding: 15px;
     margin: auto;
     width: 90vw;
     gap: 50px;
@@ -116,7 +117,18 @@ nav a {
     margin: 0.25em 0;
 }
 
+.info-row:nth-child(even) {
+    background-color: rgba(249, 245, 235, 0.4);
+}
+
+.info-box {
+    display: flex;
+    flex-direction: column;
+    max-width: 50%;
+}
+
 .described-image img {
+    border-radius: 15px;
     max-height: 450px;
 }
 
@@ -124,10 +136,6 @@ nav a {
     text-align: right;
     margin: 5px 0;
     font-size: 14px;
-}
-
-.green {
-    color: rgb(0, 175, 80);
 }
 
 footer {
@@ -149,42 +157,4 @@ footer .block-link {
     display: block;
     margin: 1rem auto;
     width: fit-content;
-}
-
-
-/* General choice buttons with animations and optional logos */
-.choice-links {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    margin: 1rem 0;
-}
-
-.choice-links a {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 10px;
-    border-radius: 32px;
-    background-color: rgb(92, 93, 103);
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    cursor: pointer;
-
-    transition: 0.2s ease-in-out;
-}
-
-.choice-links a:hover {
-    background-color: rgb(48, 48, 54);
-    transition: 0.2s ease-in-out;
-}
-
-.choice-links a.active {
-    background-color: rgb(0, 175, 80);
-}
-
-.choice-links .icon {
-    width: 16px;
-    height: 32px;
 }

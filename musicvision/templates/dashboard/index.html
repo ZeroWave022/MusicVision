@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 
 {% block additional_head_info %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/main.css') }}">
 {% endblock %}
 
 {% block title %}
@@ -13,8 +14,9 @@
 
     <div class="flex-row">
         {% if song %}
+            {# A grid displaying the spotify logo, album cover and track information #}
             <div id="now-playing-grid">
-                <img src="{{ url_for('static', filename='icons/Spotify_Logo_Green.png') }}" alt="Spotify Logo">
+                <img id="logo" src="{{ url_for('static', filename='icons/spotify-logo-green.png') }}" alt="Spotify logo">
                 <h1>Now Playing</h1>
                 <img src="{{ song['album']['images'][0]['url'] }}" alt="Album cover">
 
@@ -22,12 +24,14 @@
                     <h1><a class="styled-link" href="{{ song['external_urls']['spotify'] }}">{{ song["name"] }}</a></h1>
                     <h2>By {{ song['all_artists'] }}</h2>
                     
+                    {# Display playlist info if this track is playing from a playlist #}
                     {% if song.get("playlist") %}
                         <h2>
                             Playlist: <a class="styled-link" href="{{ song['playlist']['url'] }}">{{ song["playlist"]["name"] }}</a>
                         </h2>
                     {% endif %}
                     
+                    {# If this user has Spotify Premium, display button for playback control #}
                     {% if player["enabled"] and player["is_playing"] %}
                         <img src="{{ url_for('static', filename='icons/circle-pause-solid.svg')}}" class="play-button" onclick="play_button_event()">
                     {% elif player["enabled"] and not player["is_playing"] %}
@@ -55,20 +59,20 @@
     <div class="chart">
         <h1>Your top tracks</h1>
         <canvas id="tracks-chart"></canvas>
-        <div class="choice-links">
-            <a onclick="updateChart('tracks', 'long_term', 5)" >All time</a>
-            <a onclick="updateChart('tracks', 'medium_term', 5)">Last 6 months</a>
-            <a onclick="updateChart('tracks', 'short_term', 5)">Last 4 weeks</a>
+        <div class="choice-buttons">
+            <button onclick="updateChart('tracks', 'long_term', 5)" >All time</button>
+            <button onclick="updateChart('tracks', 'medium_term', 5)">Last 6 months</button>
+            <button onclick="updateChart('tracks', 'short_term', 5)">Last 4 weeks</button>
         </div>
     </div>
 
     <div class="chart">
         <h1>Your top artists</h1>
         <canvas id="artists-chart"></canvas>
-        <div class="choice-links">
-            <a onclick="updateChart('artists', 'long_term', 5)" >All time</a>
-            <a onclick="updateChart('artists', 'medium_term', 5)">Last 6 months</a>
-            <a onclick="updateChart('artists', 'short_term', 5)">Last 4 weeks</a>
+        <div class="choice-buttons">
+            <button onclick="updateChart('artists', 'long_term', 5)" >All time</button>
+            <button onclick="updateChart('artists', 'medium_term', 5)">Last 6 months</button>
+            <button onclick="updateChart('artists', 'short_term', 5)">Last 4 weeks</button>
         </div>
     </div>
 {% endblock %}

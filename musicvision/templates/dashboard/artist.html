@@ -1,8 +1,9 @@
 {% extends "layout.html" %}
 
 {% block additional_head_info %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard/item.css') }}">
 {% endblock %}
 
 {% block title %}
@@ -30,17 +31,21 @@
             {% endif %}
         </div>
     </div>
+
+    {# Display popularity history chart for this artist #}
     <h2>Popularity history</h2>
     <div class="chart">
         <h3 style="display: none;" id="info-text">No data found. Try selecting another time frame.</h3>
         <canvas id="artist-chart"></canvas>
     </div>
+
+    {# Choice buttons for the chart above #}
     <h3>Time frames</h3>
     <p>Select a time frame for the chart - data could be different when newer or older data is used</p>
-    <div class="choice-links">
-        <a onclick="updateArtistChart('long_term')">All time</a>
-        <a onclick="updateArtistChart('medium_term')">Last 6 months</a>
-        <a onclick="updateArtistChart('short_term')">Last 4 weeks</a>
+    <div class="choice-buttons">
+        <button onclick="updateArtistChart('long_term')">All time</button>
+        <button onclick="updateArtistChart('medium_term')">Last 6 months</button>
+        <button onclick="updateArtistChart('short_term')">Last 4 weeks</button>
     </div>
 {% endblock %}
 

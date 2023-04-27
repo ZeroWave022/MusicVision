@@ -1,0 +1,97 @@
+.green {
+    color: rgb(0, 175, 80);
+}
+
+.main-content {
+    width: 75vw;
+    margin: auto;
+}
+
+/* General choice buttons with animations and optional logos */
+.choice-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin: 1rem 0;
+}
+
+.choice-buttons a,
+.choice-buttons button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 10px;
+    border-radius: 32px;
+    
+    background-color: rgb(92, 93, 103);
+    color: white;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+
+    transition: 0.2s ease-in-out;
+}
+
+.choice-buttons a:hover,
+.choice-buttons button:hover {
+    background-color: rgb(48, 48, 54);
+    transition: 0.2s ease-in-out;
+}
+
+.choice-buttons a.active,
+.choice-buttons button.active {
+    background-color: rgb(0, 175, 80);
+}
+
+.choice-buttons .icon {
+    width: 16px;
+    height: 32px;
+}
+
+/* An action button for logging in and other user actions */
+.action-button {
+    display: inline-flex;
+    position: relative;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    
+    color: white;
+    background-color: rgb(0, 175, 80);
+    text-decoration: none;
+    border-radius: 32px;
+    cursor: pointer;
+    border: none;
+
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 16px;
+    
+    transition: 0.2s ease-in-out;
+}
+
+.action-button:hover,
+.action-button:focus,
+.action-button:active {
+    padding: 15px 30px 15px 15px;
+}
+
+.action-button:hover img,
+.action-button:focus img,
+.action-button:active img {
+    opacity: 1;
+    transition: 0.2s ease-in-out;
+}
+
+.action-button img {
+    opacity: 0;
+    position: absolute;
+    right: 5%;
+    width: 16px;
+    height: 32px;
+    transition: 0.2s ease-in-out;
+}

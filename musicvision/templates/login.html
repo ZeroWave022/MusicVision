@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block additional_head_info %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
 {% endblock %}
 
 {% block title %}
@@ -10,7 +10,7 @@
 
 {% block main %}
     <h1>Login</h1>
-    <a class="login-button" href="{{ auth_link }}">
+    <a class="action-button" href="{{ auth_link }}">
         <span>Log in with Spotify</span>
         <img src="{{ url_for('static', filename='icons/angle-right-solid.svg') }}" alt="Angle icon pointing right">
     </a>
