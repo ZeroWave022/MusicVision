@@ -30,6 +30,7 @@
             </thead>
             <tbody>
                 {% for index, artist in artists %}
+                {# Each row includes artist profile picture, name, followers and popularity for this user #}
                 <tr>
                     <td>{{ index + 1 }}</td>
                     <td>
@@ -46,6 +47,8 @@
             </tbody>
         </table>
     </div>
+
+    {# Choice buttons for changing page #}
     <div class="choice-links">
         {% if page - 1 > 0 %}
         <a href="?f={{ filter }}&p={{ page - 1 }}">

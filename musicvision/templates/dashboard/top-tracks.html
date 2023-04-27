@@ -31,6 +31,7 @@
             </thead>
             <tbody>
             {% for index, track in tracks %}
+                {# Each row includes album cover, track name, release date and popularity for this user #}
                 <tr>
                     <td>{{ index + 1 }}</td>
                     <td>
@@ -58,6 +59,8 @@
             </tbody>
         </table>
     </div>
+
+    {# Choice buttons for changing page #}
     <div class="choice-links">
         {% if page - 1 > 0 %}
         <a href="?f={{ filter }}&p={{ page - 1 }}">

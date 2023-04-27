@@ -13,6 +13,7 @@
 
     <div class="flex-row">
         {% if song %}
+            {# A grid displaying the spotify logo, album cover and track information #}
             <div id="now-playing-grid">
                 <img id="logo" src="{{ url_for('static', filename='icons/spotify-logo-green.png') }}" alt="Spotify logo">
                 <h1>Now Playing</h1>
@@ -22,12 +23,14 @@
                     <h1><a class="styled-link" href="{{ song['external_urls']['spotify'] }}">{{ song["name"] }}</a></h1>
                     <h2>By {{ song['all_artists'] }}</h2>
                     
+                    {# Display playlist info if this track is playing from a playlist #}
                     {% if song.get("playlist") %}
                         <h2>
                             Playlist: <a class="styled-link" href="{{ song['playlist']['url'] }}">{{ song["playlist"]["name"] }}</a>
                         </h2>
                     {% endif %}
                     
+                    {# If this user has Spotify Premium, display button for playback control #}
                     {% if player["enabled"] and player["is_playing"] %}
                         <img src="{{ url_for('static', filename='icons/circle-pause-solid.svg')}}" class="play-button" onclick="play_button_event()">
                     {% elif player["enabled"] and not player["is_playing"] %}

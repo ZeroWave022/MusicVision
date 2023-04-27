@@ -30,11 +30,15 @@
             {% endif %}
         </div>
     </div>
+
+    {# Display popularity history chart for this artist #}
     <h2>Popularity history</h2>
     <div class="chart">
         <h3 style="display: none;" id="info-text">No data found. Try selecting another time frame.</h3>
         <canvas id="artist-chart"></canvas>
     </div>
+
+    {# Choice buttons for the chart above #}
     <h3>Time frames</h3>
     <p>Select a time frame for the chart - data could be different when newer or older data is used</p>
     <div class="choice-links">
