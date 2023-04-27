@@ -14,7 +14,7 @@
     <div class="flex-row">
         {% if song %}
             <div id="now-playing-grid">
-                <img src="{{ url_for('static', filename='icons/Spotify_Logo_Green.png') }}" alt="Spotify Logo">
+                <img id="logo" src="{{ url_for('static', filename='icons/spotify-logo-green.png') }}" alt="Spotify logo">
                 <h1>Now Playing</h1>
                 <img src="{{ song['album']['images'][0]['url'] }}" alt="Album cover">
 

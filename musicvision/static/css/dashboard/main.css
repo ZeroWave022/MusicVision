@@ -46,6 +46,11 @@
     font-weight: 300;
 }
 
+#now-playing-grid #logo {
+    padding: 20px;
+    width: 75%;
+}
+
 #now-playing-grid .play-button {
     width: 20%;
     height: 20%;
